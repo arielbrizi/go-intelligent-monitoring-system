@@ -1,6 +1,6 @@
 package application
 
-import "go-face-reko-aws/api-core/domain"
+import "go-intelligent-monitoring-system/api-core/domain"
 
 //FilterImageService filter image without faces on it
 type FilterImageService struct {

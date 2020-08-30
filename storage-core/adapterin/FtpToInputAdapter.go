@@ -1,7 +1,7 @@
 package adapterin
 
 import (
-	"go-face-reko-aws/storage-core/application/portin"
+	"go-intelligent-monitoring-system/storage-core/application/portin"
 )
 
 //FtpToInputAdapter ...
