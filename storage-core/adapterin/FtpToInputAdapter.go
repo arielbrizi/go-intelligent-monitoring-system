@@ -13,3 +13,10 @@ type FtpToInputAdapter struct {
 func (ftp *FtpToInputAdapter) ProcessImage(image []byte) {
 	ftp.filterImageService.ProcessImage(image)
 }
+
+//NewFtpToInputAdapter initializes an FtpToInputAdapter object.
+func NewFtpToInputAdapter(filterImageService portin.InputPort) *FtpToInputAdapter {
+	return &FtpToInputAdapter{
+		filterImageService: filterImageService,
+	}
+}

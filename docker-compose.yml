@@ -1,0 +1,13 @@
+version: "2"
+services:
+  app:
+    image: golang:1.14.3
+    volumes:
+        - .:/go/src/go-intelligent-monitoring-system
+    working_dir: /go/src/go-intelligent-monitoring-system
+    command: go run main.go
+    environment:
+        - AWS_ACCESS_KEY_ID=XXX
+        - AWS_SECRET_ACCESS_KEY=XXX
+        - FTP_DIRECTORY=/home/ariel/fotos_pasillo
+        #- FTP_DIRECTORY=/home/awsftpuser/pasillo
