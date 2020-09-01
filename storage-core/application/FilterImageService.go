@@ -1,4 +1,4 @@
-package application
+package storageapplication
 
 import "go-intelligent-monitoring-system/api-core/domain"
 
@@ -8,5 +8,5 @@ type FilterImageService struct {
 
 //processImage
 func (filter *FilterImageService) processImage(image domain.Image) {
-
+	//TODO
 }

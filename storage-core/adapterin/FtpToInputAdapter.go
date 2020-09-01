@@ -1,21 +1,29 @@
-package adapterin
+package storageadapterin
 
 import (
-	"go-intelligent-monitoring-system/storage-core/application/portin"
+	storageapplicationportin "go-intelligent-monitoring-system/storage-core/application/portin"
 )
 
 //FtpToInputAdapter ...
 type FtpToInputAdapter struct {
-	filterImageService portin.InputPort
+	filterImageService storageapplicationportin.InputPort
 }
 
 //ProcessImage ...
-func (ftp *FtpToInputAdapter) ProcessImage(image []byte) {
+func (ftp *FtpToInputAdapter) processImage(image []byte) {
+	ftp.filterImageService.ProcessImage(image)
+}
+
+//ProcessImages ...
+func (ftp *FtpToInputAdapter) ProcessImages() {
+	//Todo find images from dir
+	var image []byte
+	/////
 	ftp.filterImageService.ProcessImage(image)
 }
 
 //NewFtpToInputAdapter initializes an FtpToInputAdapter object.
-func NewFtpToInputAdapter(filterImageService portin.InputPort) *FtpToInputAdapter {
+func NewFtpToInputAdapter(filterImageService storageapplicationportin.InputPort) *FtpToInputAdapter {
 	return &FtpToInputAdapter{
 		filterImageService: filterImageService,
 	}

@@ -1,4 +1,4 @@
-package portin
+package storageapplicationportin
 
 //InputPort port in for add image to analize
 type InputPort interface {
