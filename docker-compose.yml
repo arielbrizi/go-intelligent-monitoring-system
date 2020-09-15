@@ -9,5 +9,5 @@ services:
     environment:
         - AWS_ACCESS_KEY_ID=XXX
         - AWS_SECRET_ACCESS_KEY=XXX
-        - FTP_DIRECTORY=/home/ariel/fotos_pasillo
+        - FTP_DIRECTORY=/home/ariel/fotos_pasillo/
         #- FTP_DIRECTORY=/home/awsftpuser/pasillo

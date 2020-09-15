@@ -2,6 +2,10 @@ package storageadapterin
 
 import (
 	storageapplicationportin "go-intelligent-monitoring-system/storage-core/application/portin"
+	"io/ioutil"
+	"log"
+	"os"
+	"time"
 )
 
 //FtpToInputAdapter ...
@@ -16,10 +20,27 @@ func (ftp *FtpToInputAdapter) processImage(image []byte) {
 
 //ProcessImages ...
 func (ftp *FtpToInputAdapter) ProcessImages() {
-	//Todo find images from dir
-	var image []byte
-	/////
-	ftp.filterImageService.ProcessImage(image)
+
+	t := time.Now()
+	today := t.Format("20060102")
+
+	ftpTodayDirectory := os.Getenv("FTP_DIRECTORY") + today + "/"
+
+	files, err := ioutil.ReadDir(ftpTodayDirectory)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, f := range files {
+
+		//TODO: logger.Info("Procesing file: " + f.Name())
+		fileBytes, err := ioutil.ReadFile(ftpTodayDirectory + f.Name())
+		if err != nil {
+			log.Fatal(err)
+		}
+		ftp.filterImageService.ProcessImage(fileBytes)
+	}
+
 }
 
 //NewFtpToInputAdapter initializes an FtpToInputAdapter object.
