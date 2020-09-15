@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -38,7 +39,12 @@ func (ftp *FtpToInputAdapter) ProcessImages() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		ftp.filterImageService.ProcessImage(fileBytes)
+		if strings.HasSuffix(f.Name(), ".jpg") {
+			ftp.filterImageService.ProcessImage(fileBytes)
+		} else {
+			//ftp.videoToImageService.ProcessVideo(fileBytes)
+		}
+
 	}
 
 }
