@@ -1,10 +1,11 @@
 package storageapplicationportin
 
-//InputPort port in for add image to analize
-type InputPort interface {
+//InputImagePort port in for add image to analize
+type InputImagePort interface {
 	ProcessImage(imgData []byte) (string, error)
-	//ProcessVideo(videoData []byte) (string, error)
+}
 
-	//processImagePath(imgPath string) (string, error)
-	//processVideoPath(videoPath string) (string, error)
+//InputVideoPort port in for add videos to analize
+type InputVideoPort interface {
+	ProcessVideo(videoData []byte) ([][]byte, error)
 }

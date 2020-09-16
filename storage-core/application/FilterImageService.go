@@ -6,7 +6,8 @@ type FilterImageService struct {
 
 //ProcessImage ...
 func (filter *FilterImageService) ProcessImage(imgData []byte) (string, error) {
-	//TODO
+	//TODO Filter images without faces
+	//TODO invoke I2Q service
 	return "", nil
 }
 
