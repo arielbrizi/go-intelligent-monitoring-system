@@ -10,13 +10,13 @@ import (
 func main() {
 	fmt.Println("Initializing Intelligent Monitoring System")
 
-	var filterImageService storageapplicationportin.InputImagePort
+	var imageProcessingService storageapplicationportin.InputImagePort
 	var video2ImageService storageapplicationportin.InputVideoPort
 
-	filterImageService = storageapplication.NewFilterImageService()
+	imageProcessingService = storageapplication.NewImageProcessingService()
 	video2ImageService = storageapplication.NewVideo2ImageService()
 
-	ftpToInputAdapter := storageadapterin.NewFtpToInputAdapter(filterImageService, video2ImageService)
+	ftpToInputAdapter := storageadapterin.NewFtpToInputAdapter(imageProcessingService, video2ImageService)
 
 	ftpToInputAdapter.Process()
 }

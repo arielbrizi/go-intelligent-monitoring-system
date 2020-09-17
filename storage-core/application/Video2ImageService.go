@@ -2,14 +2,14 @@ package storageapplication
 
 //Video2ImageService convert video to images
 type Video2ImageService struct {
-	filterImageService FilterImageService
+	imageProcessingService ImageProcessingService
 }
 
 //ProcessVideo ...
 func (v2i *Video2ImageService) ProcessVideo(videoData []byte) ([][]byte, error) {
 	images, _ := video2Images(videoData)
 	for _, image := range images {
-		v2i.filterImageService.ProcessImage(image)
+		v2i.imageProcessingService.ProcessImage(image)
 	}
 	return nil, nil
 }

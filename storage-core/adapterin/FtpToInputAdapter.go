@@ -11,8 +11,8 @@ import (
 
 //FtpToInputAdapter ...
 type FtpToInputAdapter struct {
-	filterImageService storageapplicationportin.InputImagePort
-	video2ImageService storageapplicationportin.InputVideoPort
+	imageProcessingService storageapplicationportin.InputImagePort
+	video2ImageService     storageapplicationportin.InputVideoPort
 }
 
 //Process ...
@@ -36,7 +36,7 @@ func (ftp *FtpToInputAdapter) Process() {
 			log.Fatal(err)
 		}
 		if strings.HasSuffix(f.Name(), ".jpg") {
-			ftp.filterImageService.ProcessImage(fileBytes)
+			ftp.imageProcessingService.ProcessImage(fileBytes)
 		} else if strings.HasSuffix(f.Name(), ".mp4") {
 			ftp.video2ImageService.ProcessVideo(fileBytes)
 		}
@@ -46,9 +46,9 @@ func (ftp *FtpToInputAdapter) Process() {
 }
 
 //NewFtpToInputAdapter initializes an FtpToInputAdapter object.
-func NewFtpToInputAdapter(filterImageService storageapplicationportin.InputImagePort, video2ImageService storageapplicationportin.InputVideoPort) *FtpToInputAdapter {
+func NewFtpToInputAdapter(ImageProcessingService storageapplicationportin.InputImagePort, video2ImageService storageapplicationportin.InputVideoPort) *FtpToInputAdapter {
 	return &FtpToInputAdapter{
-		filterImageService: filterImageService,
-		video2ImageService: video2ImageService,
+		imageProcessingService: ImageProcessingService,
+		video2ImageService:     video2ImageService,
 	}
 }
