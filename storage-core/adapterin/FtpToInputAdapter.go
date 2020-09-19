@@ -18,30 +18,41 @@ type FtpToInputAdapter struct {
 //Process ...
 func (ftp *FtpToInputAdapter) Process() {
 
-	t := time.Now()
-	today := t.Format("20060102")
+	for{
+		t := time.Now()
+		today := t.Format("20060102")
 
-	ftpTodayDirectory := os.Getenv("FTP_DIRECTORY") + today + "/"
+		ftpTodayDirectory := os.Getenv("FTP_DIRECTORY") + today + "/"
+		ftpTodayDirectoryProcessed := strings.Replace(ftpTodayDirectory, today, today + "_processed"  , 1)
 
-	files, err := ioutil.ReadDir(ftpTodayDirectory)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for _, f := range files {
-
-		//TODO: logger.Info("Procesing file: " + f.Name())
-		fileBytes, err := ioutil.ReadFile(ftpTodayDirectory + f.Name())
+		files, err := ioutil.ReadDir(ftpTodayDirectory)
 		if err != nil {
 			log.Fatal(err)
 		}
-		if strings.HasSuffix(f.Name(), ".jpg") {
-			ftp.imageProcessingService.ProcessImage(fileBytes)
-		} else if strings.HasSuffix(f.Name(), ".mp4") {
-			ftp.video2ImageService.ProcessVideo(fileBytes)
-		}
 
+		for _, f := range files {
+			var err error
+			//TODO: logger.Info("Procesing file: " + f.Name())
+			fileBytes, err := ioutil.ReadFile(ftpTodayDirectory + f.Name())
+			if err != nil {
+				log.Fatal(err)
+			}
+			if strings.HasSuffix(f.Name(), ".jpg") {
+				err = ftp.imageProcessingService.ProcessImage(fileBytes)
+				if err == nil{
+					err := os.Rename(ftpTodayDirectory, ftpTodayDirectoryProcessed)
+					if err != nil {
+						log.Fatal(err)
+					}
+				}
+			} else if strings.HasSuffix(f.Name(), ".mp4") {
+				//TODO: get all images returned by ProcessVideo and process them with "imageProcessingService"
+				ftp.video2ImageService.ProcessVideo(fileBytes)
+			}
+
+		}
 	}
+
 
 }
 

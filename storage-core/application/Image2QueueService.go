@@ -11,12 +11,14 @@ type Image2QueueService struct {
 }
 
 //SendImage2Queue ...
-func (i2q *Image2QueueService) SendImage2Queue(image domain.Image) (string, error) {
-	i2q.SendImage2Queue(image)
-	return "", nil
+func (i2q *Image2QueueService) SendImage2Queue(image domain.Image) error {
+	i2q.imageToQueueAdapter.SendImage2Queue(image)
+	return nil
 }
 
 //NewImage2QueueService ...
-func NewImage2QueueService() *Image2QueueService {
-	return &Image2QueueService{}
+func NewImage2QueueService(imageToQueueAdapter storageapplicationportout.QueueImagePort) *Image2QueueService {
+	return &Image2QueueService{
+		imageToQueueAdapter: imageToQueueAdapter,
+	}
 }

@@ -12,7 +12,7 @@ type ImageProcessingService struct {
 }
 
 //ProcessImage analize if image has faces to send it to the Queue.
-func (ips *ImageProcessingService) ProcessImage(imgData []byte) (string, error) {
+func (ips *ImageProcessingService) ProcessImage(imgData []byte) error {
 	//TODO discard if image has not faces
 
 	image := &domain.Image{
@@ -20,14 +20,21 @@ func (ips *ImageProcessingService) ProcessImage(imgData []byte) (string, error) 
 		//TODO
 	}
 
-	ips.image2QueueService.SendImage2Queue(*image)
-
 	ips.storageImageAdapter.Save(*image)
 
-	return "", nil
+	ips.image2QueueService.SendImage2Queue(*image)
+
+	return nil
 }
 
 //NewImageProcessingService ...
-func NewImageProcessingService() *ImageProcessingService {
-	return &ImageProcessingService{}
+func NewImageProcessingService(storageImageAdapter storageapplicationportout.StorageImagePort, queueAdapter storageapplicationportout.QueueImagePort) *ImageProcessingService {
+	i2qs := NewImage2QueueService(queueAdapter)
+
+	ips := &ImageProcessingService{
+		storageImageAdapter: storageImageAdapter,
+		image2QueueService: *i2qs,
+	}
+
+	return ips
 }

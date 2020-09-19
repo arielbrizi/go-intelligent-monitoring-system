@@ -8,8 +8,17 @@ import (
 type KafkaAdapter struct {
 }
 
-//Save ...
-func (ka *KafkaAdapter) Save(image domain.Image) {
+//SendImage2Queue ...
+func (ka *KafkaAdapter) SendImage2Queue(image domain.Image) error {
 
-	//TODO
+	//TODO SendImage2Queue
+
+	return nil
+}
+
+//NewKafkaAdapter initializes an KafkaAdapter object.
+func NewKafkaAdapter() *KafkaAdapter {
+	return &KafkaAdapter{
+
+	}
 }
