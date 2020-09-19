@@ -25,6 +25,9 @@ func (ftp *FtpToInputAdapter) Process() {
 		ftpTodayDirectory := os.Getenv("FTP_DIRECTORY") + today + "/"
 		ftpTodayDirectoryProcessed := strings.Replace(ftpTodayDirectory, today, today + "_processed"  , 1)
 
+		//Create ftpTodayDirectoryProcessed
+		_ = os.Mkdir(ftpTodayDirectoryProcessed, os.ModePerm)
+
 		files, err := ioutil.ReadDir(ftpTodayDirectory)
 		if err != nil {
 			log.Fatal(err)
@@ -39,15 +42,17 @@ func (ftp *FtpToInputAdapter) Process() {
 			}
 			if strings.HasSuffix(f.Name(), ".jpg") {
 				err = ftp.imageProcessingService.ProcessImage(fileBytes)
-				if err == nil{
-					err := os.Rename(ftpTodayDirectory, ftpTodayDirectoryProcessed)
-					if err != nil {
-						log.Fatal(err)
-					}
-				}
 			} else if strings.HasSuffix(f.Name(), ".mp4") {
 				//TODO: get all images returned by ProcessVideo and process them with "imageProcessingService"
-				ftp.video2ImageService.ProcessVideo(fileBytes)
+				//var images [][]bytes
+				_ , err = ftp.video2ImageService.ProcessVideo(fileBytes)
+			}
+
+			if err == nil{
+				err := os.Rename(ftpTodayDirectory + f.Name(), ftpTodayDirectoryProcessed + f.Name())
+				if err != nil {
+					log.Fatal(err)
+				}
 			}
 
 		}
