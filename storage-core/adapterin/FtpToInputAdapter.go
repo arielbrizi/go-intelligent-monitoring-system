@@ -41,11 +41,11 @@ func (ftp *FtpToInputAdapter) Process() {
 				log.Fatal(err)
 			}
 			if strings.HasSuffix(f.Name(), ".jpg") {
-				err = ftp.imageProcessingService.ProcessImage(fileBytes)
+				err = ftp.imageProcessingService.ProcessImage(fileBytes, f.Name())
 			} else if strings.HasSuffix(f.Name(), ".mp4") {
 				//TODO: get all images returned by ProcessVideo and process them with "imageProcessingService"
 				//var images [][]bytes
-				_ , err = ftp.video2ImageService.ProcessVideo(fileBytes)
+				_ , err = ftp.video2ImageService.ProcessVideo(fileBytes, f.Name())
 			}
 
 			if err == nil{

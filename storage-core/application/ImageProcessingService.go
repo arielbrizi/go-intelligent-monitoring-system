@@ -1,8 +1,10 @@
 package storageapplication
 
 import (
+	"errors"
 	"go-intelligent-monitoring-system/domain"
 	storageapplicationportout "go-intelligent-monitoring-system/storage-core/application/portout"
+	"os"
 )
 
 //ImageProcessingService filter image without faces on it and send it to the Queue
@@ -12,12 +14,23 @@ type ImageProcessingService struct {
 }
 
 //ProcessImage analize if image has faces to send it to the Queue.
-func (ips *ImageProcessingService) ProcessImage(imgData []byte) error {
+func (ips *ImageProcessingService) ProcessImage(imgData []byte, fileName string) error {
 	//TODO discard if image has not faces
+
+	var bucket string
+	if bucket = os.Getenv("CAMARA_DOMAIN"); bucket == "" {
+		return errors.New("CAMARA_DOMAIN env not defined")
+	}
+
+	if imgData == nil || len(imgData) == 0 {
+		return errors.New("ProcessImage: image '" + fileName + "' empty")
+	}
 
 	image := &domain.Image{
 		Bytes: imgData,
-		//TODO
+		Name: fileName,
+		Bucket: bucket,
+		//TODO: complete all image attributes
 	}
 
 	ips.storageImageAdapter.Save(*image)

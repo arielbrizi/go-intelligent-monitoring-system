@@ -1,13 +1,14 @@
-version: "2"
+version: "3"
 services:
   app:
     image: golang:1.14.3
     volumes:
         - .:/go/src/go-intelligent-monitoring-system
+        - /home/:/home/
     working_dir: /go/src/go-intelligent-monitoring-system
     command: go run main.go
     environment:
         - AWS_ACCESS_KEY_ID=XXX
         - AWS_SECRET_ACCESS_KEY=XXX
         - FTP_DIRECTORY=/home/ariel/fotos_pasillo/
-        #- FTP_DIRECTORY=/home/awsftpuser/pasillo
+        - CAMARA_DOMAIN=camara_silvia # In case of S3 it's used to define the "bucket" name
