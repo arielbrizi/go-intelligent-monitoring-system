@@ -11,4 +11,4 @@ services:
         - AWS_ACCESS_KEY_ID=XXX
         - AWS_SECRET_ACCESS_KEY=XXX
         - FTP_DIRECTORY=/home/ariel/fotos_pasillo/
-        - CAMARA_DOMAIN=camara_silvia # In case of S3 it's used to define the "bucket" name
+        - CAMARA_DOMAIN=camarasilvia # In case of S3 it's used to define the "bucket" name
