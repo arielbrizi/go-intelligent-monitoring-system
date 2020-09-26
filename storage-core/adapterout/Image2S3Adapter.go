@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"go-intelligent-monitoring-system/domain"
+	"log"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -54,7 +55,7 @@ func NewImage2S3Adapter() *Image2S3Adapter {
 		Bucket: aws.String(bucket),
 	})
 	if err != nil {
-		fmt.Errorf("Unable to create bucket %q, %v", bucket, err)
+		log.Fatal(fmt.Errorf("Unable to create bucket %q, %v", bucket, err))
 	}
 
 	// Wait until bucket is created before finishing
@@ -64,7 +65,7 @@ func NewImage2S3Adapter() *Image2S3Adapter {
 		Bucket: aws.String(bucket),
 	})
 	if err != nil {
-		fmt.Errorf("Error occurred while waiting for bucket to be created, %v", bucket)
+		log.Fatal(fmt.Errorf("Error occurred while waiting for bucket to be created, %v", bucket))
 	}
 
 	fmt.Printf("Bucket %q successfully created\n", bucket)
