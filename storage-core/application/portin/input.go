@@ -7,5 +7,5 @@ type InputImagePort interface {
 
 //InputVideoPort port in for add videos to analize
 type InputVideoPort interface {
-	ProcessVideo(videoData []byte, fileName string) ([][]byte, error)
+	ProcessVideo(videoData []byte, fileName string) error
 }

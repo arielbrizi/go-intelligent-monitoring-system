@@ -8,12 +8,13 @@ type Video2ImageService struct {
 }
 
 //ProcessVideo ...
-func (v2i *Video2ImageService) ProcessVideo(videoData []byte, fileName string) ([][]byte, error) {
+func (v2i *Video2ImageService) ProcessVideo(videoData []byte, fileName string) error {
+	var err error
 	images, _ := video2Images(videoData)
-	for i , image := range images {
-		v2i.imageProcessingService.ProcessImage(image, fileName + "_" + strconv.Itoa(i))
+	for i, image := range images {
+		err = v2i.imageProcessingService.ProcessImage(image, fileName+"_"+strconv.Itoa(i))
 	}
-	return nil, nil
+	return err
 }
 
 func video2Images(videoData []byte) ([][]byte, error) {

@@ -10,6 +10,8 @@
 
 ### Pre-Requisites
 
+* Install FTP Server. Recommended: [Install WingFTP in very simple steps](documentation/wingFTP/README.md)
+
 * Run docker-compose: https://github.com/wurstmeister/kafka-docker
 
     - Configure docker-compose.yml:
@@ -38,3 +40,13 @@
     - Start: docker-compose up -d
     - Stop: docker-compose stop
 
+* Set Up Environment variables:
+
+```
+    - AWS_ACCESS_KEY_ID=XXX
+    - AWS_SECRET_ACCESS_KEY=XXX
+    - FTP_DIRECTORY=/home/ariel/images/ #The directory where your FTP save the images.
+    - CAMARA_DOMAIN=camarasilvia # In case of S3 it's used to define the "bucket" name
+    - QUEUE_TOPIC=images
+    - QUEUE_BROKER_LIST=localhost:9092 #abc.com/kafka1/:80,abc.com/kafka2/:80,abc.com/kafka3/:80
+```

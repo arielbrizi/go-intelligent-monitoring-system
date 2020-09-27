@@ -18,12 +18,12 @@ type FtpToInputAdapter struct {
 //Process ...
 func (ftp *FtpToInputAdapter) Process() {
 
-	for{
+	for {
 		t := time.Now()
 		today := t.Format("20060102")
 
 		ftpTodayDirectory := os.Getenv("FTP_DIRECTORY") + today + "/"
-		ftpTodayDirectoryProcessed := strings.Replace(ftpTodayDirectory, today, today + "_processed"  , 1)
+		ftpTodayDirectoryProcessed := strings.Replace(ftpTodayDirectory, today, today+"_processed", 1)
 
 		//Create ftpTodayDirectoryProcessed
 		_ = os.Mkdir(ftpTodayDirectoryProcessed, os.ModePerm)
@@ -43,13 +43,11 @@ func (ftp *FtpToInputAdapter) Process() {
 			if strings.HasSuffix(f.Name(), ".jpg") {
 				err = ftp.imageProcessingService.ProcessImage(fileBytes, f.Name())
 			} else if strings.HasSuffix(f.Name(), ".mp4") {
-				//TODO: get all images returned by ProcessVideo and process them with "imageProcessingService"
-				//var images [][]bytes
-				_ , err = ftp.video2ImageService.ProcessVideo(fileBytes, f.Name())
+				err = ftp.video2ImageService.ProcessVideo(fileBytes, f.Name())
 			}
 
-			if err == nil{
-				err := os.Rename(ftpTodayDirectory + f.Name(), ftpTodayDirectoryProcessed + f.Name())
+			if err == nil {
+				err := os.Rename(ftpTodayDirectory+f.Name(), ftpTodayDirectoryProcessed+f.Name())
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -57,7 +55,6 @@ func (ftp *FtpToInputAdapter) Process() {
 
 		}
 	}
-
 
 }
 
