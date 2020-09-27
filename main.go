@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	recognitionadapterin "go-intelligent-monitoring-system/recognition-core/adapterin"
+	recognitionapplicationportin "go-intelligent-monitoring-system/recognition-core/application/portin"
 	storageadapterin "go-intelligent-monitoring-system/storage-core/adapterin"
 	storageadapterout "go-intelligent-monitoring-system/storage-core/adapterout"
 	storageapplication "go-intelligent-monitoring-system/storage-core/application"
@@ -20,14 +22,20 @@ func main() {
 	storageImageAdapter = storageadapterout.NewImage2S3Adapter()
 
 	//Queue settings: Kafka Adapter
-	var queueAdapter storageapplicationportout.QueueImagePort
-	queueAdapter = storageadapterout.NewKafkaAdapter()
+	var queueAdapterOut storageapplicationportout.QueueImagePort
+	queueAdapterOut = storageadapterout.NewKafkaAdapter()
 
-	imageProcessingService = storageapplication.NewImageProcessingService(storageImageAdapter, queueAdapter)
+	imageProcessingService = storageapplication.NewImageProcessingService(storageImageAdapter, queueAdapterOut)
 	video2ImageService = storageapplication.NewVideo2ImageService()
 
 	//Input settings: Ftp Adapter
 	ftpToInputAdapter := storageadapterin.NewFtpToInputAdapter(imageProcessingService, video2ImageService)
 
-	ftpToInputAdapter.Process()
+	//Queue settings: Kafka Adapter
+	var queueAdapterIn recognitionapplicationportin.QueueImagePort
+	queueAdapterIn = recognitionadapterin.NewKafkaAdapter()
+
+	go ftpToInputAdapter.Process()
+
+	queueAdapterIn.ReceiveImagesFromQueue()
 }
