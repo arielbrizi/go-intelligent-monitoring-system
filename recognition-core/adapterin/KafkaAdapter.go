@@ -2,7 +2,9 @@ package recognitionadapterin
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
+	"go-intelligent-monitoring-system/domain"
+	recognitionapplicationportin "go-intelligent-monitoring-system/recognition-core/application/portin"
 	"log"
 	"os"
 
@@ -11,20 +13,30 @@ import (
 
 //KafkaAdapter ...
 type KafkaAdapter struct {
-	reader *kafka.Reader
+	reader               *kafka.Reader
+	imageAnalizerService recognitionapplicationportin.QueueImagePort
 }
 
 //ReceiveImagesFromQueue ...
 func (ka *KafkaAdapter) ReceiveImagesFromQueue() error {
 	var err error
 	var kafkaMessage kafka.Message
+	var image domain.Image
 	for {
 		kafkaMessage, err = ka.reader.ReadMessage(context.Background())
+
 		if err != nil {
 			break
 		}
-		// TODO: unmarsahl to Image
-		fmt.Printf("message at topic/partition/offset %v/%v/%v: %s = %s\n", kafkaMessage.Topic, kafkaMessage.Partition, kafkaMessage.Offset, string(kafkaMessage.Key), string(kafkaMessage.Value))
+
+		err = json.Unmarshal(kafkaMessage.Value, &image)
+		if err != nil {
+			log.Fatal("failed to Unmarshal image:", err)
+		}
+
+		ka.imageAnalizerService.AnalizeImage(image)
+
+		//fmt.Printf("message at topic/partition/offset %v/%v/%v: %s = %s\n", kafkaMessage.Topic, kafkaMessage.Partition, kafkaMessage.Offset, string(kafkaMessage.Key), string(kafkaMessage.Value))
 	}
 
 	if err = ka.reader.Close(); err != nil {
@@ -36,7 +48,7 @@ func (ka *KafkaAdapter) ReceiveImagesFromQueue() error {
 }
 
 //NewKafkaAdapter initializes an KafkaAdapter object.
-func NewKafkaAdapter() *KafkaAdapter {
+func NewKafkaAdapter(imageAnalizerService recognitionapplicationportin.QueueImagePort) *KafkaAdapter {
 	// to produce messages
 	topic := os.Getenv("QUEUE_TOPIC")
 	broker := os.Getenv("QUEUE_BROKER_LIST")
@@ -51,6 +63,7 @@ func NewKafkaAdapter() *KafkaAdapter {
 	})
 
 	return &KafkaAdapter{
-		reader: r,
+		reader:               r,
+		imageAnalizerService: imageAnalizerService,
 	}
 }

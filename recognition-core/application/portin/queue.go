@@ -1,6 +1,8 @@
 package recognitionapplicationportin
 
+import "go-intelligent-monitoring-system/domain"
+
 //QueueImagePort ...
 type QueueImagePort interface {
-	ReceiveImagesFromQueue() error
+	AnalizeImage(image domain.Image) error
 }
