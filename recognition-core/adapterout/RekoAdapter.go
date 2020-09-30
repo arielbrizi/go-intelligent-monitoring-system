@@ -105,7 +105,9 @@ func (reko *RekoAdapter) resultToAnalizedImage(result *rekognition.SearchFacesBy
 	analizedImage.RecognitionCoreResponse = resultBytes
 
 	//TODO: analize other matches
-	analizedImage.PersonNameDetected = *result.FaceMatches[0].Face.ExternalImageId
+	if len(result.FaceMatches) > 0 {
+		analizedImage.PersonNameDetected = *result.FaceMatches[0].Face.ExternalImageId
+	}
 
 	return &analizedImage, nil
 }

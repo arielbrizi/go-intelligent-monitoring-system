@@ -3,6 +3,7 @@ package recognitionadapterin
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"go-intelligent-monitoring-system/domain"
 	recognitionapplicationportin "go-intelligent-monitoring-system/recognition-core/application/portin"
 	"log"
@@ -36,7 +37,7 @@ func (ka *KafkaAdapter) ReceiveImagesFromQueue() error {
 
 		err = ka.imageAnalizerService.AnalizeImage(image)
 		if err != nil {
-			log.Fatal("failed to analize image:", err)
+			fmt.Printf("failed to analize image: %e", err) //TODO log error
 		}
 
 		//fmt.Printf("message at topic/partition/offset %v/%v/%v: %s = %s\n", kafkaMessage.Topic, kafkaMessage.Partition, kafkaMessage.Offset, string(kafkaMessage.Key), string(kafkaMessage.Value))
