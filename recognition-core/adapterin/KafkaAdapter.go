@@ -34,7 +34,10 @@ func (ka *KafkaAdapter) ReceiveImagesFromQueue() error {
 			log.Fatal("failed to Unmarshal image:", err)
 		}
 
-		ka.imageAnalizerService.AnalizeImage(image)
+		err = ka.imageAnalizerService.AnalizeImage(image)
+		if err != nil {
+			log.Fatal("failed to analize image:", err)
+		}
 
 		//fmt.Printf("message at topic/partition/offset %v/%v/%v: %s = %s\n", kafkaMessage.Topic, kafkaMessage.Partition, kafkaMessage.Offset, string(kafkaMessage.Key), string(kafkaMessage.Value))
 	}
