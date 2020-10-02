@@ -50,6 +50,8 @@ func NewSNSAdapter() *SNSAdapter {
 
 	mySession := session.Must(session.NewSession())
 
+	//TODO: create Topic and Suscriptors
+
 	// Create a SNS client with additional configuration
 	svc := sns.New(mySession, aws.NewConfig().WithRegion("us-east-1"))
 
