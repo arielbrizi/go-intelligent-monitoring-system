@@ -19,9 +19,6 @@ func main() {
 
 	// --------------- Input Port --------------- //
 
-	var imageProcessingService storageapplicationportin.InputImagePort
-	var video2ImageService storageapplicationportin.InputVideoPort
-
 	//IMPLEMENTATION --> Storage settings: S3 Adapter
 	var storageImageAdapter storageapplicationportout.StorageImagePort
 	storageImageAdapter = storageadapterout.NewImage2S3Adapter()
@@ -30,7 +27,10 @@ func main() {
 	var queueAdapterOut storageapplicationportout.QueueImagePort
 	queueAdapterOut = storageadapterout.NewKafkaAdapter()
 
+	var imageProcessingService storageapplicationportin.InputImagePort
 	imageProcessingService = storageapplication.NewImageProcessingService(storageImageAdapter, queueAdapterOut)
+
+	var video2ImageService storageapplicationportin.InputVideoPort
 	video2ImageService = storageapplication.NewVideo2ImageService()
 
 	//Input settings: Ftp Adapter
@@ -43,8 +43,11 @@ func main() {
 	var analizeAdapter recognitionapplicationportout.ImageRecognitionPort
 	analizeAdapter = recognitionadapterout.NewRekoAdapter()
 
+	var notificationAdapter recognitionapplicationportout.NotificationPort
+	notificationAdapter = recognitionadapterout.NewSNSAdapter()
+
 	var imageAnalizerService recognitionapplicationportin.QueueImagePort
-	imageAnalizerService = recognitionapplication.NewImageAnalizerService(analizeAdapter)
+	imageAnalizerService = recognitionapplication.NewImageAnalizerService(analizeAdapter, notificationAdapter)
 
 	//Input Queue settings: Kafka Adapter In
 	queueInAdapter := recognitionadapterin.NewKafkaAdapter(imageAnalizerService)
