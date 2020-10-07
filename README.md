@@ -44,9 +44,11 @@
 
 ```
     - AWS_ACCESS_KEY_ID=XXX
-    - AWS_SECRET_ACCESS_KEY=XXX
-    - FTP_DIRECTORY=/home/ariel/images/ #The directory where your FTP save the images.
-    - CAMARA_DOMAIN=camarasilvia # In case of S3 it's used to define the "bucket" name
-    - QUEUE_TOPIC=images
-    - QUEUE_BROKER_LIST=localhost:9092 #abc.com/kafka1/:80,abc.com/kafka2/:80,abc.com/kafka3/:80
+        - AWS_SECRET_ACCESS_KEY=XXX
+        - FTP_DIRECTORY=/home/ariel/fotos_pasillo/
+        - CAMARA_DOMAIN=camarasilvia # In case of S3 it's used to define the "bucket" name
+        - QUEUE_TOPIC=images
+        - QUEUE_BROKER_LIST=localhost:9092 #abc.com/kafka1/:80,abc.com/kafka2/:80,abc.com/kafka3/:80
+        - SNS_TOPIC=arn:aws:sns:us-east-1:491728392546:monitoringSystem-eMail
+        - AUTHORIZED_FACES_DIRECTORY=/home/ariel/fotos_pasillo/authorized_faces/
 ```
