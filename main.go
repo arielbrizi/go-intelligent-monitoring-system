@@ -2,6 +2,11 @@ package main
 
 import (
 	"fmt"
+	configurationadapterin "go-intelligent-monitoring-system/configuration-core/adapterin"
+	configurationadapterout "go-intelligent-monitoring-system/configuration-core/adapterout"
+	configurationapplication "go-intelligent-monitoring-system/configuration-core/application"
+	configurationapplicationportin "go-intelligent-monitoring-system/configuration-core/application/portin"
+	configurationapplicationportout "go-intelligent-monitoring-system/configuration-core/application/portout"
 	recognitionadapterin "go-intelligent-monitoring-system/recognition-core/adapterin"
 	recognitionadapterout "go-intelligent-monitoring-system/recognition-core/adapterout"
 	recognitionapplication "go-intelligent-monitoring-system/recognition-core/application"
@@ -16,6 +21,20 @@ import (
 
 func main() {
 	fmt.Println("Initializing Intelligent Monitoring System")
+
+	// --------------- CONFIGURATION PORT IN --------------- //
+
+	//IMPLEMENTATION --> Recognition settings: AWS Reko Adapter
+	var rekoAdapter configurationapplicationportout.ImageRecognitionPort
+	rekoAdapter = configurationadapterout.NewRekoAdapter()
+
+	var faceIndexerService configurationapplicationportin.ConfigurationPort
+	faceIndexerService = configurationapplication.NewFaceIndexerService(rekoAdapter)
+
+	//Input Configuration settings: Directory Adapter to add authorized faces saved on it (AUTHORIZED_FACES_DIRECTORY)
+	confDirectoryAdapter := configurationadapterin.NewDirectoryAdapter(faceIndexerService)
+
+	confDirectoryAdapter.AddAuthorizedFaces()
 
 	// --------------- Input Port --------------- //
 
@@ -40,6 +59,7 @@ func main() {
 
 	// --------------- QUEUE PORT IN --------------- //
 
+	//IMPLEMENTATION --> Recognition settings: AWS Reko Adapter
 	var analizeAdapter recognitionapplicationportout.ImageRecognitionPort
 	analizeAdapter = recognitionadapterout.NewRekoAdapter()
 
@@ -53,4 +73,5 @@ func main() {
 	queueInAdapter := recognitionadapterin.NewKafkaAdapter(imageAnalizerService)
 
 	queueInAdapter.ReceiveImagesFromQueue()
+
 }

@@ -23,8 +23,8 @@ func (ias *ImageAnalizerService) AnalizeImage(image domain.Image) error {
 
 	fmt.Printf("Image '%s' analized. Name of Person Detected: '%s'", analizedImage.Name, analizedImage.PersonNameDetected)
 
-	notification := createNotification(image)
 	if analizedImage.PersonNameDetected == "" { //Not Person Detected -- TODO: analyze other cases
+		notification := createNotification(image)
 		ias.notificationAdapter.NotifyTopic(notification)
 	}
 

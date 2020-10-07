@@ -59,9 +59,9 @@ func (ftp *FtpToInputAdapter) Process() {
 }
 
 //NewFtpToInputAdapter initializes an FtpToInputAdapter object.
-func NewFtpToInputAdapter(ImageProcessingService storageapplicationportin.InputImagePort, video2ImageService storageapplicationportin.InputVideoPort) *FtpToInputAdapter {
+func NewFtpToInputAdapter(imageProcessingService storageapplicationportin.InputImagePort, video2ImageService storageapplicationportin.InputVideoPort) *FtpToInputAdapter {
 	return &FtpToInputAdapter{
-		imageProcessingService: ImageProcessingService,
+		imageProcessingService: imageProcessingService,
 		video2ImageService:     video2ImageService,
 	}
 }
