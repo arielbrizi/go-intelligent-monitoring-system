@@ -3,8 +3,9 @@ package configurationadapterin
 import (
 	configurationapplicationportin "go-intelligent-monitoring-system/configuration-core/application/portin"
 	"io/ioutil"
-	"log"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 //DirectoryAdapter represents the adapter wich adds to the monitoring system  all authorized faces located on defined images directory
@@ -19,19 +20,22 @@ func (da *DirectoryAdapter) AddAuthorizedFaces() error {
 
 	files, err := ioutil.ReadDir(directory)
 	if err != nil {
-		log.Fatal(err)
+		log.WithFields(log.Fields{"directory": directory}).WithError(err).Fatal("Reading AUTHORIZED_FACES_DIRECTORY directory")
 	}
 
 	for _, f := range files {
 		var err error
-		//TODO: logger.Info("Procesing file: " + f.Name())
+
+		log.WithFields(log.Fields{"file": f.Name()}).Info("Procesing file")
+
 		fileBytes, err := ioutil.ReadFile(directory + f.Name())
 		if err != nil {
-			log.Fatal(err)
+			log.WithFields(log.Fields{"file": f.Name()}).WithError(err).Fatal("Procesing file")
 		}
 
 		err = da.faceIndexerService.AddAuthorizedFace(fileBytes, f.Name())
 		if err != nil {
+			log.WithFields(log.Fields{"file": f.Name()}).WithError(err).Error("Adding authorized face")
 			return err
 		}
 	}

@@ -5,8 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"go-intelligent-monitoring-system/domain"
-	"log"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/segmentio/kafka-go"
 )

@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"go-intelligent-monitoring-system/domain"
 	recognitionapplicationportin "go-intelligent-monitoring-system/recognition-core/application/portin"
-	"log"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/segmentio/kafka-go"
 )

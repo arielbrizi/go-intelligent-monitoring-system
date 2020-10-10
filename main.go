@@ -17,9 +17,17 @@ import (
 	storageapplication "go-intelligent-monitoring-system/storage-core/application"
 	storageapplicationportin "go-intelligent-monitoring-system/storage-core/application/portin"
 	storageapplicationportout "go-intelligent-monitoring-system/storage-core/application/portout"
+
+	logrus_stack "github.com/Gurpartap/logrus-stack"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
+
+	log.SetFormatter(&log.JSONFormatter{})
+	log.SetLevel(log.InfoLevel) // TODO: get from Config
+	log.AddHook(logrus_stack.StandardHook())
+
 	fmt.Println("Initializing Intelligent Monitoring System")
 
 	// --------------- CONFIGURATION PORT IN --------------- //

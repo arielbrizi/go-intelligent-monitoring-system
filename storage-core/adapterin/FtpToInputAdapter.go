@@ -3,10 +3,11 @@ package storageadapterin
 import (
 	storageapplicationportin "go-intelligent-monitoring-system/storage-core/application/portin"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 //FtpToInputAdapter ...

@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"go-intelligent-monitoring-system/domain"
-	"log"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"

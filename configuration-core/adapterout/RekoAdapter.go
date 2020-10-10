@@ -1,13 +1,12 @@
 package configurationadapterout
 
 import (
-	"fmt"
 	"go-intelligent-monitoring-system/domain"
 
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/rekognition"
+	log "github.com/sirupsen/logrus"
 )
 
 //RekoAdapter ...
@@ -23,32 +22,12 @@ func (rekoAdapter *RekoAdapter) DeleteCollection(collectionName string) error {
 
 	result, err := rekoAdapter.svc.DeleteCollection(input)
 	if err != nil {
-		if aerr, ok := err.(awserr.Error); ok {
-			switch aerr.Code() {
-			case rekognition.ErrCodeInvalidParameterException:
-				fmt.Println(rekognition.ErrCodeInvalidParameterException, aerr.Error())
-			case rekognition.ErrCodeAccessDeniedException:
-				fmt.Println(rekognition.ErrCodeAccessDeniedException, aerr.Error())
-			case rekognition.ErrCodeInternalServerError:
-				fmt.Println(rekognition.ErrCodeInternalServerError, aerr.Error())
-			case rekognition.ErrCodeThrottlingException:
-				fmt.Println(rekognition.ErrCodeThrottlingException, aerr.Error())
-			case rekognition.ErrCodeProvisionedThroughputExceededException:
-				fmt.Println(rekognition.ErrCodeProvisionedThroughputExceededException, aerr.Error())
-			case rekognition.ErrCodeResourceNotFoundException:
-				fmt.Println(rekognition.ErrCodeResourceNotFoundException, aerr.Error())
-			default:
-				fmt.Println(aerr.Error())
-			}
-		} else {
-			// Print the error, cast err to awserr.Error to get the Code and
-			// Message from an error.
-			fmt.Println(err.Error())
-		}
+		log.WithFields(log.Fields{"collectionName": collectionName}).WithError(err).Error("Error Deleting collection")
 		return err
 	}
 
-	fmt.Println(result)
+	log.WithFields(log.Fields{"collectionName": collectionName, "result": result}).Info("Collection deleted")
+
 	return nil
 }
 
@@ -61,32 +40,11 @@ func (rekoAdapter *RekoAdapter) CreateCollection(collectionName string) error {
 
 	result, err := rekoAdapter.svc.CreateCollection(input)
 	if err != nil {
-		if aerr, ok := err.(awserr.Error); ok {
-			switch aerr.Code() {
-			case rekognition.ErrCodeInvalidParameterException:
-				fmt.Println(rekognition.ErrCodeInvalidParameterException, aerr.Error())
-			case rekognition.ErrCodeAccessDeniedException:
-				fmt.Println(rekognition.ErrCodeAccessDeniedException, aerr.Error())
-			case rekognition.ErrCodeInternalServerError:
-				fmt.Println(rekognition.ErrCodeInternalServerError, aerr.Error())
-			case rekognition.ErrCodeThrottlingException:
-				fmt.Println(rekognition.ErrCodeThrottlingException, aerr.Error())
-			case rekognition.ErrCodeProvisionedThroughputExceededException:
-				fmt.Println(rekognition.ErrCodeProvisionedThroughputExceededException, aerr.Error())
-			case rekognition.ErrCodeResourceAlreadyExistsException:
-				fmt.Println(rekognition.ErrCodeResourceAlreadyExistsException, aerr.Error())
-			default:
-				fmt.Println(aerr.Error())
-			}
-		} else {
-			// Print the error, cast err to awserr.Error to get the Code and
-			// Message from an error.
-			fmt.Println(err.Error())
-		}
+		log.WithFields(log.Fields{"collectionName": collectionName}).WithError(err).Error("Error Creating collection")
 		return err
 	}
 
-	fmt.Println(result)
+	log.WithFields(log.Fields{"collectionName": collectionName, "result": result}).Info("Collection created")
 
 	return nil
 }
@@ -104,38 +62,12 @@ func (rekoAdapter *RekoAdapter) IndexFace(image domain.AuthorizedFace) error {
 
 	result, err := rekoAdapter.svc.IndexFaces(input)
 	if err != nil {
-		if aerr, ok := err.(awserr.Error); ok {
-			switch aerr.Code() {
-			case rekognition.ErrCodeInvalidS3ObjectException:
-				fmt.Println(rekognition.ErrCodeInvalidS3ObjectException, aerr.Error())
-			case rekognition.ErrCodeInvalidParameterException:
-				fmt.Println(rekognition.ErrCodeInvalidParameterException, aerr.Error())
-			case rekognition.ErrCodeImageTooLargeException:
-				fmt.Println(rekognition.ErrCodeImageTooLargeException, aerr.Error())
-			case rekognition.ErrCodeAccessDeniedException:
-				fmt.Println(rekognition.ErrCodeAccessDeniedException, aerr.Error())
-			case rekognition.ErrCodeInternalServerError:
-				fmt.Println(rekognition.ErrCodeInternalServerError, aerr.Error())
-			case rekognition.ErrCodeThrottlingException:
-				fmt.Println(rekognition.ErrCodeThrottlingException, aerr.Error())
-			case rekognition.ErrCodeProvisionedThroughputExceededException:
-				fmt.Println(rekognition.ErrCodeProvisionedThroughputExceededException, aerr.Error())
-			case rekognition.ErrCodeResourceNotFoundException:
-				fmt.Println(rekognition.ErrCodeResourceNotFoundException, aerr.Error())
-			case rekognition.ErrCodeInvalidImageFormatException:
-				fmt.Println(rekognition.ErrCodeInvalidImageFormatException, aerr.Error())
-			default:
-				fmt.Println(aerr.Error())
-			}
-		} else {
-			// Print the error, cast err to awserr.Error to get the Code and
-			// Message from an error.
-			fmt.Println(err.Error())
-		}
+		log.WithFields(log.Fields{"authorizedFace.Name": image.Name, "authorizedFace.Bucket": image.Bucket, "authorizedFace.CollectionName": image.CollectionName, "result": result}).WithError(err).Error("Error indexing face")
 		return err
 	}
 
-	fmt.Println(result)
+	log.WithFields(log.Fields{"authorizedFace.Name": image.Name, "authorizedFace.Bucket": image.Bucket, "authorizedFace.CollectionName": image.CollectionName, "result": result}).Info("Face indexed")
+
 	return nil
 }
 

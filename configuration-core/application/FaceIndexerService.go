@@ -3,8 +3,9 @@ package configurationapplication
 import (
 	configurationapplicationportout "go-intelligent-monitoring-system/configuration-core/application/portout"
 	"go-intelligent-monitoring-system/domain"
-	"log"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 //FaceIndexerService manage the images collection
@@ -16,14 +17,17 @@ type FaceIndexerService struct {
 func (fis *FaceIndexerService) AddAuthorizedFace(image []byte, name string) error {
 
 	var authorizedFace domain.AuthorizedFace
+
+	collectionName := os.Getenv("CAMARA_DOMAIN")
+
 	authorizedFace.Name = name
-	authorizedFace.Bucket = os.Getenv("CAMARA_DOMAIN")
+	authorizedFace.Bucket = collectionName
 	authorizedFace.Bytes = image
-	authorizedFace.CollectionName = os.Getenv("CAMARA_DOMAIN")
+	authorizedFace.CollectionName = collectionName
 
-	fis.rekoAdapter.IndexFace(authorizedFace)
+	err := fis.rekoAdapter.IndexFace(authorizedFace)
 
-	return nil
+	return err
 }
 
 //DeleteAuthorizedFace ...
@@ -41,12 +45,14 @@ func NewFaceIndexerService(rekoAdapter configurationapplicationportout.ImageReco
 		rekoAdapter: rekoAdapter,
 	}
 
-	fis.rekoAdapter.DeleteCollection(os.Getenv("CAMARA_DOMAIN"))
+	collectionName := os.Getenv("CAMARA_DOMAIN")
 
-	err := fis.rekoAdapter.CreateCollection(os.Getenv("CAMARA_DOMAIN"))
+	fis.rekoAdapter.DeleteCollection(collectionName)
+
+	err := fis.rekoAdapter.CreateCollection(collectionName)
 
 	if err != nil {
-		log.Fatal(err)
+		log.WithFields(log.Fields{"collectionName": collectionName}).WithError(err).Fatal("Error Creating collection")
 	}
 
 	return fis
