@@ -27,15 +27,21 @@ func (ips *ImageProcessingService) ProcessImage(imgData []byte, fileName string)
 	}
 
 	image := &domain.Image{
-		Bytes: imgData,
-		Name: fileName,
+		Bytes:  imgData,
+		Name:   fileName,
 		Bucket: bucket,
 		//TODO: complete all image attributes
 	}
 
-	ips.storageImageAdapter.Save(*image)
+	err := ips.storageImageAdapter.Save(*image)
+	if err != nil {
+		return err
+	}
 
-	ips.image2QueueService.SendImage2Queue(*image)
+	err = ips.image2QueueService.SendImage2Queue(*image)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -46,7 +52,7 @@ func NewImageProcessingService(storageImageAdapter storageapplicationportout.Sto
 
 	ips := &ImageProcessingService{
 		storageImageAdapter: storageImageAdapter,
-		image2QueueService: *i2qs,
+		image2QueueService:  *i2qs,
 	}
 
 	return ips

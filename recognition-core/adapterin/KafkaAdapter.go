@@ -3,7 +3,6 @@ package recognitionadapterin
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"go-intelligent-monitoring-system/domain"
 	recognitionapplicationportin "go-intelligent-monitoring-system/recognition-core/application/portin"
 	"os"
@@ -28,24 +27,25 @@ func (ka *KafkaAdapter) ReceiveImagesFromQueue() error {
 		kafkaMessage, err = ka.reader.ReadMessage(context.Background())
 
 		if err != nil {
+			log.WithError(err).Error("failed to read message from Kafka")
 			break
 		}
 
 		err = json.Unmarshal(kafkaMessage.Value, &image)
 		if err != nil {
-			log.Fatal("failed to Unmarshal image:", err)
+			log.WithError(err).Error("failed to Unmarshal image")
 		}
 
 		err = ka.imageAnalizerService.AnalizeImage(image)
 		if err != nil {
-			fmt.Printf("failed to analize image: %e", err) //TODO log error
+			log.WithFields(log.Fields{"image.Name": image.Name, "kafkaMessage.Topic": kafkaMessage.Topic, "kafkaMessage.Partition": kafkaMessage.Partition, "kafkaMessage.Offset": kafkaMessage.Offset}).WithError(err).Error("failed to analize image")
 		}
 
-		//fmt.Printf("message at topic/partition/offset %v/%v/%v: %s = %s\n", kafkaMessage.Topic, kafkaMessage.Partition, kafkaMessage.Offset, string(kafkaMessage.Key), string(kafkaMessage.Value))
+		log.WithFields(log.Fields{"image.Name": image.Name, "kafkaMessage.Topic": kafkaMessage.Topic, "kafkaMessage.Partition": kafkaMessage.Partition, "kafkaMessage.Offset": kafkaMessage.Offset}).Info("Image correctly analized")
 	}
 
 	if err = ka.reader.Close(); err != nil {
-		log.Fatal("failed to close reader:", err)
+		log.WithError(err).Fatal("failed to close reader")
 	}
 
 	return err

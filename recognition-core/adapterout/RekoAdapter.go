@@ -2,14 +2,14 @@ package recognitionadapterout
 
 import (
 	"encoding/json"
-	"fmt"
 	"go-intelligent-monitoring-system/domain"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/rekognition"
+
+	log "github.com/sirupsen/logrus"
 )
 
 //RekoAdapter ...
@@ -21,8 +21,10 @@ type RekoAdapter struct {
 //Recognize ...
 func (reko *RekoAdapter) Recognize(image domain.Image) (*domain.AnalizedImage, error) {
 
+	collectionName := image.Bucket //TODO: same as bucket?
+
 	input := &rekognition.SearchFacesByImageInput{
-		CollectionId:       aws.String(image.Bucket), //TODO: same as bucket?
+		CollectionId:       aws.String(collectionName),
 		FaceMatchThreshold: aws.Float64(95.000000),
 		Image: &rekognition.Image{
 			S3Object: &rekognition.S3Object{
@@ -35,41 +37,17 @@ func (reko *RekoAdapter) Recognize(image domain.Image) (*domain.AnalizedImage, e
 
 	result, err := reko.svc.SearchFacesByImage(input)
 	if err != nil {
-		if aerr, ok := err.(awserr.Error); ok {
-			switch aerr.Code() {
-			case rekognition.ErrCodeInvalidS3ObjectException:
-				fmt.Println(rekognition.ErrCodeInvalidS3ObjectException, aerr.Error())
-			case rekognition.ErrCodeInvalidParameterException:
-				fmt.Println(rekognition.ErrCodeInvalidParameterException, aerr.Error())
-			case rekognition.ErrCodeImageTooLargeException:
-				fmt.Println(rekognition.ErrCodeImageTooLargeException, aerr.Error())
-			case rekognition.ErrCodeAccessDeniedException:
-				fmt.Println(rekognition.ErrCodeAccessDeniedException, aerr.Error())
-			case rekognition.ErrCodeInternalServerError:
-				fmt.Println(rekognition.ErrCodeInternalServerError, aerr.Error())
-			case rekognition.ErrCodeThrottlingException:
-				fmt.Println(rekognition.ErrCodeThrottlingException, aerr.Error())
-			case rekognition.ErrCodeProvisionedThroughputExceededException:
-				fmt.Println(rekognition.ErrCodeProvisionedThroughputExceededException, aerr.Error())
-			case rekognition.ErrCodeResourceNotFoundException:
-				fmt.Println(rekognition.ErrCodeResourceNotFoundException, aerr.Error())
-			case rekognition.ErrCodeInvalidImageFormatException:
-				fmt.Println(rekognition.ErrCodeInvalidImageFormatException, aerr.Error())
-			default:
-				fmt.Println(aerr.Error())
-			}
-		} else {
-			// Print the error, cast err to awserr.Error to get the Code and
-			// Message from an error.
-			fmt.Println(err.Error())
-		}
+		log.WithFields(log.Fields{"collectionName": collectionName, "image.Name": image.Name, "image.Bucket": image.Bucket}).WithError(err).Error("Error on rekognition.SearchFacesByImageInput")
 		return nil, err
 	}
 
 	analizedImage, errAnalizedImage := reko.resultToAnalizedImage(result, image)
 	if errAnalizedImage != nil {
+		log.WithFields(log.Fields{"collectionName": collectionName, "result": result}).WithError(errAnalizedImage).Error("Error generating domain.AnalizedImage")
 		return nil, errAnalizedImage
 	}
+
+	log.WithFields(log.Fields{"collectionName": collectionName, "result": result}).Info("Image correctly Analized")
 
 	return analizedImage, nil
 }

@@ -9,12 +9,15 @@ type Video2ImageService struct {
 
 //ProcessVideo ...
 func (v2i *Video2ImageService) ProcessVideo(videoData []byte, fileName string) error {
-	var err error
-	images, _ := video2Images(videoData)
-	for i, image := range images {
-		err = v2i.imageProcessingService.ProcessImage(image, fileName+"_"+strconv.Itoa(i))
+
+	images, err := video2Images(videoData)
+	if err != nil {
+		return err
 	}
-	return err
+	for i, image := range images {
+		v2i.imageProcessingService.ProcessImage(image, fileName+"_"+strconv.Itoa(i))
+	}
+	return nil
 }
 
 func video2Images(videoData []byte) ([][]byte, error) {

@@ -3,7 +3,6 @@ package storageadapterout
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"go-intelligent-monitoring-system/domain"
 	"os"
 
@@ -14,7 +13,9 @@ import (
 
 //KafkaAdapter ...
 type KafkaAdapter struct {
-	conn *kafka.Conn
+	conn   *kafka.Conn
+	topic  string
+	broker string
 }
 
 //SendImage2Queue ...
@@ -22,20 +23,24 @@ func (ka *KafkaAdapter) SendImage2Queue(image domain.Image) error {
 
 	value, marshalError := json.Marshal(image)
 	if marshalError != nil {
-		log.Fatal(fmt.Errorf("Failed to marshal image"))
+		log.WithFields(log.Fields{"image.Name": image.Name, "image.Bucket": image.Bucket}).WithError(marshalError).Error("Filed to marshal image")
+		return marshalError
 	}
 
 	i, errWrite := ka.conn.WriteMessages(kafka.Message{Value: value})
 
 	//TODO: retries
 	if errWrite != nil {
+		log.WithFields(log.Fields{"topic": ka.topic, "broker": ka.broker, "image.Name": image.Name, "image.Bucket": image.Bucket}).WithError(errWrite).Error("Failed to write message to kafka")
+
 		if errClose := ka.conn.Close(); errClose != nil {
-			fmt.Printf("failed to close writer: %s \n", errClose)
+			log.WithFields(log.Fields{"image.Name": image.Name, "image.Bucket": image.Bucket}).WithError(errClose).Error("Failed to close writer")
 		}
-		log.Fatal(fmt.Errorf("failed to write messages: %v", errWrite))
+
 	}
 
-	fmt.Printf("%v bytes written \n", i)
+	log.WithFields(log.Fields{"topic": ka.topic, "broker": ka.broker, "bytesWritten": i, "image.Name": image.Name, "image.Bucket": image.Bucket}).Info("Message correctly written to kafka")
+
 	return nil
 }
 
@@ -48,12 +53,14 @@ func NewKafkaAdapter() *KafkaAdapter {
 
 	conn, err := kafka.DialLeader(context.Background(), "tcp", broker, topic, partition)
 	if err != nil {
-		log.Fatal("failed to dial leader:", err)
+		log.WithFields(log.Fields{"topic": topic, "broker": broker}).WithError(err).Fatal("Kafka: failed to dial leader")
 	}
 
 	//conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
 
 	return &KafkaAdapter{
-		conn: conn,
+		conn:   conn,
+		topic:  topic,
+		broker: broker,
 	}
 }

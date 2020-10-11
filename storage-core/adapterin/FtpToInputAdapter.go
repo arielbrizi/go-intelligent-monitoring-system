@@ -31,15 +31,15 @@ func (ftp *FtpToInputAdapter) Process() {
 
 		files, err := ioutil.ReadDir(ftpTodayDirectory)
 		if err != nil {
-			log.Fatal(err)
+			log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory}).WithError(err).Fatal("Error reading directory")
 		}
 
 		for _, f := range files {
 			var err error
-			//TODO: logger.Info("Procesing file: " + f.Name())
+
 			fileBytes, err := ioutil.ReadFile(ftpTodayDirectory + f.Name())
 			if err != nil {
-				log.Fatal(err)
+				log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).WithError(err).Fatal("Error reading file")
 			}
 			if strings.HasSuffix(f.Name(), ".jpg") {
 				err = ftp.imageProcessingService.ProcessImage(fileBytes, f.Name())
@@ -50,8 +50,10 @@ func (ftp *FtpToInputAdapter) Process() {
 			if err == nil {
 				err := os.Rename(ftpTodayDirectory+f.Name(), ftpTodayDirectoryProcessed+f.Name())
 				if err != nil {
-					log.Fatal(err)
+					log.WithFields(log.Fields{"ftpTodayDirectoryProcessed": ftpTodayDirectoryProcessed, "ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).WithError(err).Fatal("Error moving file")
 				}
+
+				log.WithFields(log.Fields{"ftpTodayDirectoryProcessed": ftpTodayDirectoryProcessed, "ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).Info("File correctly processed")
 			}
 
 		}

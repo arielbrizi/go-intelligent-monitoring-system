@@ -2,7 +2,6 @@ package storageadapterout
 
 import (
 	"bytes"
-	"fmt"
 	"go-intelligent-monitoring-system/domain"
 	"os"
 
@@ -32,7 +31,14 @@ func (i2s3 *Image2S3Adapter) Save(image domain.Image) error {
 	// Perform an upload.
 	_, err := i2s3.uploader.Upload(upParams)
 
-	return err
+	if err != nil {
+		log.WithFields(log.Fields{"image.Bucket": image.Bucket, "image.Name": image.Name}).WithError(err).Error("Error uploading image to S3")
+		return err
+	}
+
+	log.WithFields(log.Fields{"image.Bucket": image.Bucket, "image.Name": image.Name}).Info("Image correctly uploaded to S3")
+
+	return nil
 }
 
 //NewImage2S3Adapter initializes an Image2S3Adapter object.
@@ -56,20 +62,17 @@ func NewImage2S3Adapter() *Image2S3Adapter {
 		Bucket: aws.String(bucket),
 	})
 	if err != nil {
-		log.Fatal(fmt.Errorf("Unable to create bucket %q, %v", bucket, err))
+		log.WithFields(log.Fields{"bucket": bucket}).WithError(err).Fatal("Unable to create bucket")
 	}
-
-	// Wait until bucket is created before finishing
-	fmt.Printf("Waiting for bucket %q to be created...\n", bucket)
 
 	err = s3Svc.WaitUntilBucketExists(&s3.HeadBucketInput{
 		Bucket: aws.String(bucket),
 	})
 	if err != nil {
-		log.Fatal(fmt.Errorf("Error occurred while waiting for bucket to be created, %v", bucket))
+		log.WithFields(log.Fields{"bucket": bucket}).WithError(err).Fatal("Error occurred while waiting for bucket to be created")
 	}
 
-	fmt.Printf("Bucket %q successfully created\n", bucket)
+	log.WithFields(log.Fields{"bucket": bucket}).Info("Bucket correctly created")
 
 	return &Image2S3Adapter{
 		bucket:   bucket,

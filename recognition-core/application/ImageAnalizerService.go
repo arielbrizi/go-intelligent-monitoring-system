@@ -5,6 +5,8 @@ import (
 	"go-intelligent-monitoring-system/domain"
 	recognitionapplicationportout "go-intelligent-monitoring-system/recognition-core/application/portout"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 //ImageAnalizerService send images to recognition port to be analized.
@@ -21,11 +23,12 @@ func (ias *ImageAnalizerService) AnalizeImage(image domain.Image) error {
 		return err
 	}
 
-	fmt.Printf("Image '%s' analized. Name of Person Detected: '%s'", analizedImage.Name, analizedImage.PersonNameDetected)
-
-	if analizedImage.PersonNameDetected == "" { //Not Person Detected -- TODO: analyze other cases
+	if analizedImage.PersonNameDetected == "" {
 		notification := createNotification(image)
 		ias.notificationAdapter.NotifyTopic(notification)
+		log.WithFields(log.Fields{"notification.Message": notification.Message, "notification.Topic": notification.Topic, "notification.Type": notification.Type, "analizedImage.Name": analizedImage.Name, "analizedImage.RecognitionCoreResponse": string(analizedImage.RecognitionCoreResponse)}).Info("Image correctly analized but Person is not Authorized")
+	} else {
+		log.WithFields(log.Fields{"analizedImage.PersonNameDetected": analizedImage.PersonNameDetected, "analizedImage.Name": analizedImage.Name, "analizedImage.RecognitionCoreResponse": string(analizedImage.RecognitionCoreResponse)}).Info("Image correctly analized and Person is Authorized")
 	}
 
 	return nil

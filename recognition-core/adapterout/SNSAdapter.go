@@ -1,12 +1,13 @@
 package recognitionadapterout
 
 import (
-	"fmt"
 	"go-intelligent-monitoring-system/domain"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sns"
+
+	log "github.com/sirupsen/logrus"
 )
 
 //SNSAdapter ...
@@ -24,11 +25,11 @@ func (sn *SNSAdapter) NotifyTopic(notification domain.Notification) error {
 
 	result, err := sn.svc.Publish(input)
 	if err != nil {
-		fmt.Println("Publish error:", err)
+		log.WithFields(log.Fields{"notification.Topic": notification.Topic, "notification.Message": notification.Message, "result": result}).WithError(err).Error("Error on publishing message")
 		return err
 	}
 
-	fmt.Println(result)
+	log.WithFields(log.Fields{"notification.Topic": notification.Topic, "notification.Message": notification.Message, "result": result}).Info("Message correctly sent")
 
 	return nil
 }
