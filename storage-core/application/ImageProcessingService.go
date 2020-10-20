@@ -4,7 +4,10 @@ import (
 	"errors"
 	"go-intelligent-monitoring-system/domain"
 	storageapplicationportout "go-intelligent-monitoring-system/storage-core/application/portout"
+	"go-intelligent-monitoring-system/storage-core/application/utils"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 //ImageProcessingService filter image without faces on it and send it to the Queue
@@ -15,7 +18,11 @@ type ImageProcessingService struct {
 
 //ProcessImage analize if image has faces to send it to the Queue.
 func (ips *ImageProcessingService) ProcessImage(imgData []byte, fileName string) error {
-	//TODO discard if image has not faces
+
+	if utils.FacesOnImage(imgData) == 0 {
+		log.WithFields(log.Fields{"fileName": fileName}).Info("No faces on image")
+		return nil
+	}
 
 	var bucket string
 	if bucket = os.Getenv("CAMARA_DOMAIN"); bucket == "" {
