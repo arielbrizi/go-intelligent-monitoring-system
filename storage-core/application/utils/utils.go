@@ -21,7 +21,7 @@ var (
 func init() {
 	var err error
 	//---------- Pigo implementation https://github.com/esimov/pigo --------------
-	cascadeFile, err = ioutil.ReadFile("config/face-detection/esimov_pigo/cascade/facefinder")
+	cascadeFile, err = ioutil.ReadFile("config/pigo/facefinder")
 	pigo := pigo.NewPigo()
 	// Unpack the binary file. This will return the number of cascade trees,
 	// the tree depth, the threshold and the prediction from tree's leaf nodes.
