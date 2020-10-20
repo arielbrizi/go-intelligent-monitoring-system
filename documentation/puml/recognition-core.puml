@@ -24,9 +24,11 @@ namespace recognitionadapterout {
 
     }
     class SNSAdapter << (S,Aquamarine) >> {
-        + NotifyTopic(image domain.Notification) error
-        + NotifySMS(image domain.SMSNotification) error
-        + NotifyEmail(image domain.EmailNotification) error
+        - svc *sns.SNS
+
+        + NotifyTopic(notification domain.Notification) error
+        + NotifySMS(notification domain.SMSNotification) error
+        + NotifyEmail(notification domain.EmailNotification) error
 
     }
 }
@@ -35,6 +37,7 @@ namespace recognitionadapterout {
 "recognitionapplicationportout.NotificationPort" <|-- "recognitionadapterout.SNSAdapter"
 
 "recognitionadapterout.RekoAdapter" o-- "rekognition.Rekognition"
+"recognitionadapterout.SNSAdapter" o-- "sns.SNS"
 
 namespace recognitionapplication {
     class ImageAnalizerService << (S,Aquamarine) >> {

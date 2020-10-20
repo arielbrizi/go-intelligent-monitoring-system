@@ -23,6 +23,8 @@ namespace storageadapterout {
     }
     class KafkaAdapter << (S,Aquamarine) >> {
         - conn *kafka.Conn
+        - topic string
+        - broker string
 
         + SendImage2Queue(image domain.Image) error
 

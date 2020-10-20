@@ -1,0 +1,64 @@
+@startuml
+namespace configurationadapterin {
+    class DirectoryAdapter << (S,Aquamarine) >> {
+        - faceIndexerService portin.ConfigurationPort
+
+        + AddAuthorizedFaces() error
+
+    }
+}
+
+
+"configurationadapterin.DirectoryAdapter" o-- "portin.ConfigurationPort"
+
+namespace configurationadapterout {
+    class RekoAdapter << (S,Aquamarine) >> {
+        - svc *rekognition.Rekognition
+
+        + DeleteCollection(collectionName string) error
+        + CreateCollection(collectionName string) error
+        + IndexFace(image domain.AuthorizedFace) error
+
+    }
+}
+
+"configurationapplicationportout.ImageRecognitionPort" <|-- "configurationadapterout.RekoAdapter"
+
+"configurationadapterout.RekoAdapter" o-- "rekognition.Rekognition"
+
+namespace configurationapplication {
+    class FaceIndexerService << (S,Aquamarine) >> {
+        - rekoAdapter portout.ImageRecognitionPort
+
+        + AddAuthorizedFace(image []byte, name string) error
+        + DeleteAuthorizedFace(image []byte, name string) error
+
+    }
+}
+
+"configurationapplicationportin.ConfigurationPort" <|-- "configurationapplication.FaceIndexerService"
+
+"configurationapplication.FaceIndexerService" o-- "portout.ImageRecognitionPort"
+
+namespace configurationapplicationportin {
+    interface ConfigurationPort  {
+        + AddAuthorizedFace(image []byte, name string) error
+        + DeleteAuthorizedFace(image []byte, name string) error
+
+    }
+}
+
+
+
+namespace configurationapplicationportout {
+    interface ImageRecognitionPort  {
+        + DeleteCollection(collectionName string) error
+        + CreateCollection(collectionName string) error
+        + IndexFace(authorizedFace domain.AuthorizedFace) error
+
+    }
+}
+
+
+
+@enduml
