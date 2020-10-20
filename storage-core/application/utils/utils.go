@@ -20,7 +20,7 @@ var (
 
 func init() {
 	var err error
-	//---------- Pigo implementation --------------
+	//---------- Pigo implementation https://github.com/esimov/pigo --------------
 	cascadeFile, err = ioutil.ReadFile("config/face-detection/esimov_pigo/cascade/facefinder")
 	pigo := pigo.NewPigo()
 	// Unpack the binary file. This will return the number of cascade trees,
@@ -32,7 +32,7 @@ func init() {
 	angle = 0.0 // cascade rotation angle. 0.0 is 0 radians and 1.0 is 2*pi radians
 }
 
-//FacesOnImagePigo return the number of faces detected on imgData (using PIGO implementation)
+//FacesOnImagePigo return the number of faces detected on imgData (using PIGO implementation https://github.com/esimov/pigo)
 func FacesOnImagePigo(imgData []byte) int {
 	var err error
 
