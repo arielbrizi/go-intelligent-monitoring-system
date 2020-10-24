@@ -1,8 +1,11 @@
 # Intelligent Monitoring System
 
+<div style="text-align:center"><img src="documentation/gopher.png" /></div>
+
+
 Its a Simple free Software to make a monitoring system using standars IP cameras. They only need to be able to send images to an FTP Server.
 
-My motivation was to implement Hexagonal Architecture (or Ports & Adapters architecture ) in something usefull. You can see on the diagram that is very simple to add anothers adapters to process images. In fact, you can easily change AWS Recognize component with another.
+I developed it implementing Hexagonal Architecture (or Ports & Adapters architecture ). You can see on the diagram that is very simple to add anothers adapters to process images. In fact, you can easily change AWS Recognize component with another.
 
 ## Architecture
 ![Architecture](documentation/Architecture.png)
