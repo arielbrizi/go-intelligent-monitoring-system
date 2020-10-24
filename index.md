@@ -1,4 +1,4 @@
-<h1 align="center"><img alt="gopher-camera" src="documentation/gopher.png"/></h1>
+<h1 align="center"><img src="gopher.png"/></h1>
 
 Its a Simple free Software to make a monitoring system based on Face Recognition using standars IP cameras. They only need to be able to send images to an FTP Server.
 
