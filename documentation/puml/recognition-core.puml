@@ -1,0 +1,81 @@
+@startuml
+namespace recognitionadapterin {
+    class KafkaAdapter << (S,Aquamarine) >> {
+        - reader *kafka.Reader
+        - imageAnalizerService portin.QueueImagePort
+
+        + ReceiveImagesFromQueue() error
+
+    }
+}
+
+
+"recognitionadapterin.KafkaAdapter" o-- "kafka.Reader"
+"recognitionadapterin.KafkaAdapter" o-- "portin.QueueImagePort"
+
+namespace recognitionadapterout {
+    class RekoAdapter << (S,Aquamarine) >> {
+        - bucket string
+        - svc *rekognition.Rekognition
+
+        - resultToAnalizedImage(result *rekognition.SearchFacesByImageOutput, image domain.Image) (*domain.AnalizedImage, error)
+
+        + Recognize(image domain.Image) (*domain.AnalizedImage, error)
+
+    }
+    class SNSAdapter << (S,Aquamarine) >> {
+        - svc *sns.SNS
+
+        + NotifyTopic(notification domain.Notification) error
+        + NotifySMS(notification domain.SMSNotification) error
+        + NotifyEmail(notification domain.EmailNotification) error
+
+    }
+}
+
+"recognitionapplicationportout.ImageRecognitionPort" <|-- "recognitionadapterout.RekoAdapter"
+"recognitionapplicationportout.NotificationPort" <|-- "recognitionadapterout.SNSAdapter"
+
+"recognitionadapterout.RekoAdapter" o-- "rekognition.Rekognition"
+"recognitionadapterout.SNSAdapter" o-- "sns.SNS"
+
+namespace recognitionapplication {
+    class ImageAnalizerService << (S,Aquamarine) >> {
+        - analizeAdapter portout.ImageRecognitionPort
+        - notificationAdapter portout.NotificationPort
+
+        + AnalizeImage(image domain.Image) error
+
+    }
+}
+
+"recognitionapplicationportin.QueueImagePort" <|-- "recognitionapplication.ImageAnalizerService"
+
+"recognitionapplication.ImageAnalizerService" o-- "portout.ImageRecognitionPort"
+"recognitionapplication.ImageAnalizerService" o-- "portout.NotificationPort"
+
+namespace recognitionapplicationportin {
+    interface QueueImagePort  {
+        + AnalizeImage(image domain.Image) error
+
+    }
+}
+
+
+
+namespace recognitionapplicationportout {
+    interface ImageRecognitionPort  {
+        + Recognize(image domain.Image) (*domain.AnalizedImage, error)
+
+    }
+    interface NotificationPort  {
+        + NotifyTopic(notification domain.Notification) error
+        + NotifySMS(notification domain.SMSNotification) error
+        + NotifyEmail(notification domain.EmailNotification) error
+
+    }
+}
+
+
+
+@enduml
