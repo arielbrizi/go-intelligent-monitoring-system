@@ -50,4 +50,4 @@ Coming soon: Api Adapter
 
     - AUTHORIZED_FACES_DIRECTORY=/home/ariel/fotos_pasillo/authorized_faces/ #Faces you want to define as authorized in JPG files  
 ```
-### - Run "sudo docker-compose up -d" from your go-intelligent-monitoring-system directory.
+### - Run "sudo docker-compose up -d" from your go-intelligent-monitoring-system directory. If you have problems check 'service docker status'. If it's neccesary run 'sudo service docker start'
