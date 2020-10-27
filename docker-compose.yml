@@ -19,6 +19,8 @@ services:
       KAFKA_CREATE_TOPICS: "images:1:1"
   app:
     image: golang:1.14.3
+    depends_on:
+      - broker
     volumes:
         - .:/go/src/go-intelligent-monitoring-system
         - /home/:/home/
