@@ -27,6 +27,7 @@ services:
     working_dir: /go/src/go-intelligent-monitoring-system
     command: go run main.go
     environment:
+        - TZ=America/Argentina/Buenos_Aires
         - AWS_ACCESS_KEY_ID=XXX
         - AWS_SECRET_ACCESS_KEY=XXX
         - FTP_DIRECTORY=/home/ariel/fotos_pasillo/
