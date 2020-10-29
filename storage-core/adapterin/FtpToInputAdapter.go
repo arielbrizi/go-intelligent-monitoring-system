@@ -16,22 +16,35 @@ type FtpToInputAdapter struct {
 	video2ImageService     storageapplicationportin.InputVideoPort
 }
 
-//Process ...
+//Process all images on FTP directory
 func (ftp *FtpToInputAdapter) Process() {
+	var t = time.Now()
+	var today = t.Format("20060102")
+	var ftpDirectory = os.Getenv("FTP_DIRECTORY")
+	var ftpTodayDirectory = ftpDirectory + today + "/"
+	var ftpTodayDirectoryProcessed = strings.Replace(ftpTodayDirectory, today, today+"_processed", 1)
+
+	//Create ftpTodayDirectoryProcessed: where images processed are saved.
+	_ = os.Mkdir(ftpTodayDirectoryProcessed, os.ModePerm)
 
 	for {
-		t := time.Now()
-		today := t.Format("20060102")
+		t = time.Now()
+		date := t.Format("20060102")
 
-		ftpTodayDirectory := os.Getenv("FTP_DIRECTORY") + today + "/"
-		ftpTodayDirectoryProcessed := strings.Replace(ftpTodayDirectory, today, today+"_processed", 1)
+		if date != today { //the day changed
+			today = date
+			ftpTodayDirectory = ftpDirectory + today + "/"
+			ftpTodayDirectoryProcessed = strings.Replace(ftpTodayDirectory, today, today+"_processed", 1)
 
-		//Create ftpTodayDirectoryProcessed
-		_ = os.Mkdir(ftpTodayDirectoryProcessed, os.ModePerm)
+			//Create ftpTodayDirectoryProcessed
+			_ = os.Mkdir(ftpTodayDirectoryProcessed, os.ModePerm)
+		}
 
 		files, err := ioutil.ReadDir(ftpTodayDirectory)
 		if err != nil {
-			log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory}).WithError(err).Fatal("Error reading directory")
+			log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory}).WithError(err).Error("Error reading directory. Maybe not images for today")
+			//Create ftpTodayDirectory. To avoid get errors until some image will be saved
+			_ = os.Mkdir(ftpTodayDirectory, os.ModePerm)
 		}
 
 		for _, f := range files {
@@ -57,6 +70,8 @@ func (ftp *FtpToInputAdapter) Process() {
 			}
 
 		}
+
+		time.Sleep(5 * time.Second)
 	}
 
 }

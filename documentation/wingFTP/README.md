@@ -12,3 +12,5 @@
 
 - Task Configuration (Ex: if you want to delete old files)
 ![](wingFTPDeleteTask.jpg)
+
+- If you dont't want to use wingFTP tasks, You can make a linux cron to depure old dirs. Check [depureFtpDirs.sh](../../tools/depureFtpDirs.sh)
