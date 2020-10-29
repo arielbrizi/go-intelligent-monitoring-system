@@ -16,7 +16,7 @@ type FtpToInputAdapter struct {
 	video2ImageService     storageapplicationportin.InputVideoPort
 }
 
-//Process ...
+//Process all images on FTP directory
 func (ftp *FtpToInputAdapter) Process() {
 	var t = time.Now()
 	var today = t.Format("20060102")
