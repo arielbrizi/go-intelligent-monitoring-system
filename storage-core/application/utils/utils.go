@@ -38,7 +38,8 @@ func FacesOnImagePigo(imgData []byte) int {
 
 	img, _, err := image.Decode(bytes.NewReader(imgData))
 	if err != nil {
-		log.Fatalln(err)
+		log.WithError(err).Error("Error on decode image")
+		return 0
 	}
 
 	src := pigo.ImgToNRGBA(img)

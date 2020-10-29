@@ -50,9 +50,9 @@ func (ftp *FtpToInputAdapter) Process() {
 		for _, f := range files {
 			var err error
 
-			fileBytes, err := ioutil.ReadFile(ftpTodayDirectory + f.Name())
-			if err != nil {
-				log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).WithError(err).Fatal("Error reading file")
+			fileBytes, errFile := ioutil.ReadFile(ftpTodayDirectory + f.Name())
+			if errFile != nil {
+				log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).WithError(errFile).Fatal("Error reading file")
 			}
 			if strings.HasSuffix(f.Name(), ".jpg") {
 				err = ftp.imageProcessingService.ProcessImage(fileBytes, f.Name())
@@ -67,6 +67,8 @@ func (ftp *FtpToInputAdapter) Process() {
 				}
 
 				log.WithFields(log.Fields{"ftpTodayDirectoryProcessed": ftpTodayDirectoryProcessed, "ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).Info("File correctly processed")
+			} else {
+				log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).WithError(err).Error("Error processing file")
 			}
 
 		}
