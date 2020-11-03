@@ -23,9 +23,10 @@ func (ftp *FtpToInputAdapter) Process() {
 	var ftpDirectory = os.Getenv("FTP_DIRECTORY")
 	var ftpTodayDirectory = ftpDirectory + today + "/"
 	var ftpTodayDirectoryProcessed = strings.Replace(ftpTodayDirectory, today, today+"_processed", 1)
+	var ftpTodayDirectoryFacesNotAuth = strings.Replace(ftpTodayDirectory, today, today+"_faces_not_auth", 1)
+	var ftpTodayDirectoryFacesAuth = strings.Replace(ftpTodayDirectory, today, today+"_faces_auth", 1)
 
-	//Create ftpTodayDirectoryProcessed: where images processed are saved.
-	_ = os.Mkdir(ftpTodayDirectoryProcessed, os.ModePerm)
+	createFolders(ftpTodayDirectory, ftpTodayDirectoryProcessed, ftpTodayDirectoryFacesNotAuth, ftpTodayDirectoryFacesAuth)
 
 	for {
 		t = time.Now()
@@ -35,16 +36,15 @@ func (ftp *FtpToInputAdapter) Process() {
 			today = date
 			ftpTodayDirectory = ftpDirectory + today + "/"
 			ftpTodayDirectoryProcessed = strings.Replace(ftpTodayDirectory, today, today+"_processed", 1)
+			ftpTodayDirectoryFacesNotAuth = strings.Replace(ftpTodayDirectory, today, today+"_faces_not_auth", 1)
+			ftpTodayDirectoryFacesAuth = strings.Replace(ftpTodayDirectory, today, today+"_faces_auth", 1)
 
-			//Create ftpTodayDirectoryProcessed
-			_ = os.Mkdir(ftpTodayDirectoryProcessed, os.ModePerm)
+			createFolders(ftpTodayDirectory, ftpTodayDirectoryProcessed, ftpTodayDirectoryFacesNotAuth, ftpTodayDirectoryFacesAuth)
 		}
 
 		files, err := ioutil.ReadDir(ftpTodayDirectory)
 		if err != nil {
-			log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory}).WithError(err).Error("Error reading directory. Maybe not images for today")
-			//Create ftpTodayDirectory. To avoid get errors until some image will be saved
-			_ = os.Mkdir(ftpTodayDirectory, os.ModePerm)
+			log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory}).WithError(err).Error("Error reading directory")
 		}
 
 		for _, f := range files {
@@ -84,4 +84,15 @@ func NewFtpToInputAdapter(imageProcessingService storageapplicationportin.InputI
 		imageProcessingService: imageProcessingService,
 		video2ImageService:     video2ImageService,
 	}
+}
+
+func createFolders(ftpTodayDirectory string, ftpTodayDirectoryProcessed string, ftpTodayDirectoryFacesNotAuth string, ftpTodayDirectoryFacesAuth string) {
+	//Create ftpTodayDirectory
+	_ = os.Mkdir(ftpTodayDirectory, os.ModePerm)
+	//Create ftpTodayDirectoryProcessed
+	_ = os.Mkdir(ftpTodayDirectoryProcessed, os.ModePerm)
+	//Create ftpTodayDirectoryFacesNotAuth: where images processed are saved.
+	_ = os.Mkdir(ftpTodayDirectoryFacesNotAuth, os.ModePerm)
+	//Create ftpTodayDirectoryFacesAuth: where images processed are saved.
+	_ = os.Mkdir(ftpTodayDirectoryFacesAuth, os.ModePerm)
 }

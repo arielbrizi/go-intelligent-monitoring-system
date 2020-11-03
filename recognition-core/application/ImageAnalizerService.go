@@ -13,6 +13,8 @@ import (
 type ImageAnalizerService struct {
 	analizeAdapter      recognitionapplicationportout.ImageRecognitionPort
 	notificationAdapter recognitionapplicationportout.NotificationPort
+	imageStorageAdapter recognitionapplicationportout.ImageStoragePort
+	snsTopic            string
 }
 
 //AnalizeImage analize if faces on image are recognized or not
@@ -24,32 +26,36 @@ func (ias *ImageAnalizerService) AnalizeImage(image domain.Image) error {
 	}
 
 	if analizedImage.PersonNameDetected == "" {
-		notification := createNotification(image)
+		notification := ias.createNotification(image)
 		ias.notificationAdapter.NotifyTopic(notification)
 		log.WithFields(log.Fields{"notification.Message": notification.Message, "notification.Topic": notification.Topic, "notification.Type": notification.Type, "analizedImage.Name": analizedImage.Name, "analizedImage.RecognitionCoreResponse": string(analizedImage.RecognitionCoreResponse)}).Info("Image correctly analized but Person is not Authorized")
+		ias.imageStorageAdapter.SaveNotAuthorizedImage(image)
 	} else {
 		log.WithFields(log.Fields{"analizedImage.PersonNameDetected": analizedImage.PersonNameDetected, "analizedImage.Name": analizedImage.Name, "analizedImage.RecognitionCoreResponse": string(analizedImage.RecognitionCoreResponse)}).Info("Image correctly analized and Person is Authorized")
+		ias.imageStorageAdapter.SaveAuthorizedImage(image)
 	}
 
 	return nil
 }
 
 //NewImageAnalizerService ...
-func NewImageAnalizerService(analizeAdapter recognitionapplicationportout.ImageRecognitionPort, notificationAdapter recognitionapplicationportout.NotificationPort) *ImageAnalizerService {
+func NewImageAnalizerService(analizeAdapter recognitionapplicationportout.ImageRecognitionPort, notificationAdapter recognitionapplicationportout.NotificationPort, imageStorageAdapter recognitionapplicationportout.ImageStoragePort) *ImageAnalizerService {
 
 	ias := &ImageAnalizerService{
 		analizeAdapter:      analizeAdapter,
 		notificationAdapter: notificationAdapter,
+		imageStorageAdapter: imageStorageAdapter,
+		snsTopic:            os.Getenv("SNS_TOPIC"),
 	}
 
 	return ias
 }
 
-func createNotification(image domain.Image) domain.Notification {
+func (ias *ImageAnalizerService) createNotification(image domain.Image) domain.Notification {
 	var notification domain.Notification
 	notification.Image = image
 
-	notification.Topic = os.Getenv("SNS_TOPIC")
+	notification.Topic = ias.snsTopic
 	notification.Type = "AWS_SNS_TOPIC"
 
 	//TODO: add S3 image Url
