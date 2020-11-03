@@ -24,8 +24,9 @@ func (ftp *FtpToInputAdapter) Process() {
 	var ftpTodayDirectory = ftpDirectory + today + "/"
 	var ftpTodayDirectoryProcessed = strings.Replace(ftpTodayDirectory, today, today+"_processed", 1)
 	var ftpTodayDirectoryFacesNotAuth = strings.Replace(ftpTodayDirectory, today, today+"_faces_not_auth", 1)
+	var ftpTodayDirectoryFacesAuth = strings.Replace(ftpTodayDirectory, today, today+"_faces_auth", 1)
 
-	createFolders(ftpTodayDirectory, ftpTodayDirectoryProcessed, ftpTodayDirectoryFacesNotAuth)
+	createFolders(ftpTodayDirectory, ftpTodayDirectoryProcessed, ftpTodayDirectoryFacesNotAuth, ftpTodayDirectoryFacesAuth)
 
 	for {
 		t = time.Now()
@@ -36,8 +37,9 @@ func (ftp *FtpToInputAdapter) Process() {
 			ftpTodayDirectory = ftpDirectory + today + "/"
 			ftpTodayDirectoryProcessed = strings.Replace(ftpTodayDirectory, today, today+"_processed", 1)
 			ftpTodayDirectoryFacesNotAuth = strings.Replace(ftpTodayDirectory, today, today+"_faces_not_auth", 1)
+			ftpTodayDirectoryFacesAuth = strings.Replace(ftpTodayDirectory, today, today+"_faces_auth", 1)
 
-			createFolders(ftpTodayDirectory, ftpTodayDirectoryProcessed, ftpTodayDirectoryFacesNotAuth)
+			createFolders(ftpTodayDirectory, ftpTodayDirectoryProcessed, ftpTodayDirectoryFacesNotAuth, ftpTodayDirectoryFacesAuth)
 		}
 
 		files, err := ioutil.ReadDir(ftpTodayDirectory)
@@ -84,11 +86,13 @@ func NewFtpToInputAdapter(imageProcessingService storageapplicationportin.InputI
 	}
 }
 
-func createFolders(ftpTodayDirectory string, ftpTodayDirectoryProcessed string, ftpTodayDirectoryFacesNotAuth string) {
+func createFolders(ftpTodayDirectory string, ftpTodayDirectoryProcessed string, ftpTodayDirectoryFacesNotAuth string, ftpTodayDirectoryFacesAuth string) {
 	//Create ftpTodayDirectory
 	_ = os.Mkdir(ftpTodayDirectory, os.ModePerm)
 	//Create ftpTodayDirectoryProcessed
 	_ = os.Mkdir(ftpTodayDirectoryProcessed, os.ModePerm)
 	//Create ftpTodayDirectoryFacesNotAuth: where images processed are saved.
 	_ = os.Mkdir(ftpTodayDirectoryFacesNotAuth, os.ModePerm)
+	//Create ftpTodayDirectoryFacesAuth: where images processed are saved.
+	_ = os.Mkdir(ftpTodayDirectoryFacesAuth, os.ModePerm)
 }

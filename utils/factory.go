@@ -71,9 +71,13 @@ func NewQueueInAdapter() *recognitionadapterin.KafkaAdapter {
 	var notificationAdapter recognitionapplicationportout.NotificationPort
 	notificationAdapter = recognitionadapterout.NewSNSAdapter()
 
+	//Define the "Adapter Out" to be used to save categorized images (authorized, not authorized, etc)
+	var imageStorageAdapter recognitionapplicationportout.ImageStoragePort
+	imageStorageAdapter = recognitionadapterout.NewFtpImageStorageAdapter()
+
 	//Define the service to be  used between the "Adapter In" and the "Adapter Out"
 	var imageAnalizerService recognitionapplicationportin.QueueImagePort
-	imageAnalizerService = recognitionapplication.NewImageAnalizerService(analizeAdapter, notificationAdapter)
+	imageAnalizerService = recognitionapplication.NewImageAnalizerService(analizeAdapter, notificationAdapter, imageStorageAdapter)
 
 	//"Adapter In": KafkaAdapter gets the images to be analized from Kafka
 	return recognitionadapterin.NewKafkaAdapter(imageAnalizerService)
