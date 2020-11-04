@@ -33,10 +33,12 @@ func (ka *KafkaAdapter) SendImage2Queue(image domain.Image) error {
 	if errWrite != nil {
 		log.WithFields(log.Fields{"topic": ka.topic, "broker": ka.broker, "image.Name": image.Name, "image.Bucket": image.Bucket}).WithError(errWrite).Error("Failed to write message to kafka")
 
+		/* TODO: close connection on App Exit
 		if errClose := ka.conn.Close(); errClose != nil {
 			log.WithFields(log.Fields{"image.Name": image.Name, "image.Bucket": image.Bucket}).WithError(errClose).Error("Failed to close writer")
 		}
-
+		*/
+		return errWrite
 	}
 
 	log.WithFields(log.Fields{"topic": ka.topic, "broker": ka.broker, "bytesWritten": i, "image.Name": image.Name, "image.Bucket": image.Bucket}).Info("Message correctly written to kafka")
