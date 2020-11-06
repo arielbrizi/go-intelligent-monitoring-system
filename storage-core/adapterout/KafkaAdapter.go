@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"go-intelligent-monitoring-system/domain"
 	"os"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 
@@ -13,7 +14,7 @@ import (
 
 //KafkaAdapter ...
 type KafkaAdapter struct {
-	conn   *kafka.Conn
+	writer *kafka.Writer
 	topic  string
 	broker string
 }
@@ -27,21 +28,22 @@ func (ka *KafkaAdapter) SendImage2Queue(image domain.Image) error {
 		return marshalError
 	}
 
-	i, errWrite := ka.conn.WriteMessages(kafka.Message{Value: value})
+	errWrite := ka.writer.WriteMessages(context.Background(), kafka.Message{Value: value})
 
-	//TODO: retries
 	if errWrite != nil {
 		log.WithFields(log.Fields{"topic": ka.topic, "broker": ka.broker, "image.Name": image.Name, "image.Bucket": image.Bucket}).WithError(errWrite).Error("Failed to write message to kafka")
 
-		/* TODO: close connection on App Exit
-		if errClose := ka.conn.Close(); errClose != nil {
-			log.WithFields(log.Fields{"image.Name": image.Name, "image.Bucket": image.Bucket}).WithError(errClose).Error("Failed to close writer")
-		}
-		*/
+		ka.writer = kafka.NewWriter(kafka.WriterConfig{
+			Brokers:         []string{ka.broker},
+			Topic:           ka.topic,
+			Balancer:        &kafka.LeastBytes{},
+			IdleConnTimeout: 720 * time.Hour, // 1 Mes
+		})
+
 		return errWrite
 	}
 
-	log.WithFields(log.Fields{"topic": ka.topic, "broker": ka.broker, "bytesWritten": i, "image.Name": image.Name, "image.Bucket": image.Bucket}).Info("Message correctly written to kafka")
+	log.WithFields(log.Fields{"topic": ka.topic, "broker": ka.broker, "image.Name": image.Name, "image.Bucket": image.Bucket}).Info("Message correctly written to kafka")
 
 	return nil
 }
@@ -51,17 +53,20 @@ func NewKafkaAdapter() *KafkaAdapter {
 	// to produce messages
 	topic := os.Getenv("QUEUE_TOPIC")
 	broker := os.Getenv("QUEUE_BROKER_LIST")
-	partition := 0
 
-	conn, err := kafka.DialLeader(context.Background(), "tcp", broker, topic, partition)
-	if err != nil {
-		log.WithFields(log.Fields{"topic": topic, "broker": broker}).WithError(err).Fatal("Kafka: failed to dial leader")
+	w := kafka.NewWriter(kafka.WriterConfig{
+		Brokers:         []string{broker},
+		Topic:           topic,
+		Balancer:        &kafka.LeastBytes{},
+		IdleConnTimeout: 720 * time.Hour, // 1 Mes
+	})
+
+	if w == nil {
+		log.WithFields(log.Fields{"topic": topic, "broker": broker}).Fatal("Kafka: failed to create writer")
 	}
 
-	//conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
-
 	return &KafkaAdapter{
-		conn:   conn,
+		writer: w,
 		topic:  topic,
 		broker: broker,
 	}
