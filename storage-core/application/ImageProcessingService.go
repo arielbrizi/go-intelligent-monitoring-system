@@ -19,7 +19,12 @@ type ImageProcessingService struct {
 //ProcessImage analize if image has faces to send it to the Queue.
 func (ips *ImageProcessingService) ProcessImage(imgData []byte, fileName string) error {
 
-	if utils.FacesOnImage(imgData) == 0 {
+	faces, err := utils.FacesOnImage(imgData)
+	if err != nil {
+		return err
+	}
+
+	if faces == 0 {
 		log.WithFields(log.Fields{"fileName": fileName}).Info("No faces on image")
 		return nil
 	}
@@ -40,14 +45,14 @@ func (ips *ImageProcessingService) ProcessImage(imgData []byte, fileName string)
 		//TODO: complete all image attributes
 	}
 
-	err := ips.storageImageAdapter.Save(*image)
-	if err != nil {
-		return err
+	errSave := ips.storageImageAdapter.Save(*image)
+	if errSave != nil {
+		return errSave
 	}
 
-	err = ips.image2QueueService.SendImage2Queue(*image)
-	if err != nil {
-		return err
+	errSend := ips.image2QueueService.SendImage2Queue(*image)
+	if errSend != nil {
+		return errSend
 	}
 
 	return nil
