@@ -33,13 +33,13 @@ func init() {
 }
 
 //FacesOnImagePigo return the number of faces detected on imgData (using PIGO implementation https://github.com/esimov/pigo)
-func FacesOnImagePigo(imgData []byte) int {
+func FacesOnImagePigo(imgData []byte) (int, error) {
 	var err error
 
 	img, _, err := image.Decode(bytes.NewReader(imgData))
 	if err != nil {
 		log.WithError(err).Error("Error on decode image")
-		return 0
+		return 0, err
 	}
 
 	src := pigo.ImgToNRGBA(img)
@@ -68,13 +68,13 @@ func FacesOnImagePigo(imgData []byte) int {
 	// Calculate the intersection over union (IoU) of two clusters.
 	dets = classifier.ClusterDetections(dets, 0.2)
 
-	return len(dets)
+	return len(dets), nil
 }
 
 //FacesOnImage return the number of faces detected on imgData
-func FacesOnImage(imgData []byte) int {
+func FacesOnImage(imgData []byte) (int, error) {
 
-	faces := FacesOnImagePigo(imgData)
+	faces, err := FacesOnImagePigo(imgData)
 
-	return faces
+	return faces, err
 }

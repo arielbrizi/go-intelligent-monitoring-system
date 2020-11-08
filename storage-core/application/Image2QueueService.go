@@ -12,8 +12,7 @@ type Image2QueueService struct {
 
 //SendImage2Queue ...
 func (i2q *Image2QueueService) SendImage2Queue(image domain.Image) error {
-	i2q.imageToQueueAdapter.SendImage2Queue(image)
-	return nil
+	return i2q.imageToQueueAdapter.SendImage2Queue(image)
 }
 
 //NewImage2QueueService ...
