@@ -54,6 +54,10 @@ func NewImage2S3Adapter() *Image2S3Adapter {
 	// S3 service client the Upload manager will use.
 	s3Svc := s3.New(sess)
 
+	//TODO: make public policy to be able to open image on emails:
+	// - https://docs.aws.amazon.com/sdk-for-go/api/service/s3/#S3.PutBucketPolicy
+	// - https://docs.aws.amazon.com/AmazonS3/latest/dev/example-bucket-policies.html
+
 	// Create an uploader with S3 client and default options
 	uploader := s3manager.NewUploaderWithClient(s3Svc)
 
