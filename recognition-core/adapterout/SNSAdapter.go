@@ -18,7 +18,7 @@ type SNSAdapter struct {
 //NotifyTopic ...
 func (sn *SNSAdapter) NotifyTopic(notification domain.Notification) error {
 
-	url := "https://" + notification.Topic + ".s3.amazonaws.com/" + notification.Image.Name
+	url := "https://" + notification.Image.Bucket + ".s3.amazonaws.com/" + notification.Image.Name
 
 	msg := notification.Message + "\n \n " + url + "\n \n "
 
