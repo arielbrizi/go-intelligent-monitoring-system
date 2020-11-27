@@ -18,8 +18,12 @@ type SNSAdapter struct {
 //NotifyTopic ...
 func (sn *SNSAdapter) NotifyTopic(notification domain.Notification) error {
 
+	url := "https://" + notification.Topic + ".s3.amazonaws.com/" + notification.Image.Name
+
+	msg := notification.Message + "\n \n " + url + "\n \n "
+
 	input := &sns.PublishInput{
-		Message:  aws.String(notification.Message),
+		Message:  aws.String(msg),
 		TopicArn: aws.String(notification.Topic),
 	}
 
