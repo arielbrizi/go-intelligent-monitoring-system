@@ -1,5 +1,14 @@
-#Delete all directories 2 days olders on /home/ariel/fotos_pasillo/* 
-find /home/ec2-user/wftpserver/pasillo/* -type d -ctime +1 -exec rm -rf {} \;
+#Delete all directories olders on /home/ariel/fotos_pasillo/* 
+find /home/ec2-user/wftpserver/pasillo/* -type d -mtime +1 -exec rm -rf {} \;
+d=`date`
+msg="script executed: $d"
+echo "$msg"
+
+dateMenos1=$(TZ=America/Argentina/Buenos_Aires date -d '1 day ago' +'%Y%m%d')
+find /home/ec2-user/wftpserver/pasillo/$dateMenos1* -type d  -exec rm -rf {} \;
+
+msg="script executed: folder $dateMenos1 "
+echo "$msg"
 
 #Configure a cron: https://kvz.io/schedule-tasks-on-linux-using-crontab.html
 #Execute every day. Minute 0 of hour 1
@@ -9,3 +18,6 @@ find /home/ec2-user/wftpserver/pasillo/* -type d -ctime +1 -exec rm -rf {} \;
 #$ sudo crontab -l
 # To edit the list of cronjobs you can run:
 #$ sudo crontab -e
+
+
+

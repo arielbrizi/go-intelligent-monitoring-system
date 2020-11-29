@@ -22,12 +22,18 @@ func init() {
 	var err error
 	//---------- Pigo implementation https://github.com/esimov/pigo --------------
 	cascadeFile, err = ioutil.ReadFile("config/pigo/facefinder")
+	if err != nil {
+		cascadeFile, err = ioutil.ReadFile("../../../config/pigo/facefinder") // On test Mode
+		if err != nil {
+			log.Fatalf("Error reading the cascade file: %s", err)
+		}
+	}
 	pigo := pigo.NewPigo()
 	// Unpack the binary file. This will return the number of cascade trees,
 	// the tree depth, the threshold and the prediction from tree's leaf nodes.
 	classifier, err = pigo.Unpack(cascadeFile)
 	if err != nil {
-		log.Fatalf("Error reading the cascade file: %s", err)
+		log.Fatalf("Error unpacking the cascade file: %s", err)
 	}
 	angle = 0.0 // cascade rotation angle. 0.0 is 0 radians and 1.0 is 2*pi radians
 }
