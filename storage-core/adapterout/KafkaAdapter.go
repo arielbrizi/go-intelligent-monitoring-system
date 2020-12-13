@@ -71,3 +71,28 @@ func NewKafkaAdapter() *KafkaAdapter {
 		broker: broker,
 	}
 }
+
+///////////////////////// For Test /////////////////
+
+//KafkaAdapterTest ...
+type KafkaAdapterTest struct {
+	writer *kafka.Writer
+	topic  string
+	broker string
+}
+
+//SendImage2Queue ...
+func (ka *KafkaAdapterTest) SendImage2Queue(image domain.Image) error {
+	return nil
+}
+
+//NewKafkaAdapterTest initializes an KafkaAdapter object.
+func NewKafkaAdapterTest() *KafkaAdapterTest {
+	ka := NewKafkaAdapter()
+
+	return &KafkaAdapterTest{
+		writer: nil,
+		topic:  ka.topic,
+		broker: ka.broker,
+	}
+}

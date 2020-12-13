@@ -4,6 +4,9 @@ import (
 	"bytes"
 	"image"
 	"io/ioutil"
+	"path"
+	"runtime"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 
@@ -18,15 +21,21 @@ var (
 	cascadeFile []byte
 )
 
+//getRootPackage returns always de same, even when its invoked from tests.
+func getRootPackage() string {
+	_, b, _, _ := runtime.Caller(0)
+	d := path.Join(path.Dir(b))
+	return d[:strings.Index(d, "storage-core")]
+}
+
 func init() {
+
 	var err error
+	path := getRootPackage() + "config/pigo/facefinder"
 	//---------- Pigo implementation https://github.com/esimov/pigo --------------
-	cascadeFile, err = ioutil.ReadFile("config/pigo/facefinder")
+	cascadeFile, err = ioutil.ReadFile(path)
 	if err != nil {
-		cascadeFile, err = ioutil.ReadFile("../../../config/pigo/facefinder") // On test Mode
-		if err != nil {
-			log.Fatalf("Error reading the cascade file: %s", err)
-		}
+		log.Fatalf("Error reading the cascade file: %s", err)
 	}
 	pigo := pigo.NewPigo()
 	// Unpack the binary file. This will return the number of cascade trees,
