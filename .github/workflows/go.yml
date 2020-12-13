@@ -34,13 +34,10 @@ jobs:
 
     - name: Test
       env:
-        TZ=America/Argentina/Buenos_Aires
         AWS_ACCESS_KEY_ID=XXX
         AWS_SECRET_ACCESS_KEY=XXX
-        FTP_DIRECTORY=/home/ariel/fotos_pasillo/
         CAMARA_DOMAIN=camarasilvia
         QUEUE_TOPIC=images
         QUEUE_BROKER_LIST=broker:9092
         SNS_TOPIC=arn:aws:sns:us-east-1:491728392546:monitoringSystem-eMail
-        AUTHORIZED_FACES_DIRECTORY=/home/ariel/fotos_pasillo/authorized_faces/
       run: go test -v ./...
