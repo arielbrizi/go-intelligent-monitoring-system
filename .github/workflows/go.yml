@@ -34,10 +34,10 @@ jobs:
 
     - name: Test
       env:
-        AWS_ACCESS_KEY_ID=XXX
-        AWS_SECRET_ACCESS_KEY=XXX
-        CAMARA_DOMAIN=camarasilvia
-        QUEUE_TOPIC=images
-        QUEUE_BROKER_LIST=broker:9092
-        SNS_TOPIC=arn:aws:sns:us-east-1:491728392546:monitoringSystem-eMail
+        AWS_ACCESS_KEY_ID: XXX
+        AWS_SECRET_ACCESS_KEY: XXX
+        CAMARA_DOMAIN: camarasilvia
+        QUEUE_TOPIC: images
+        QUEUE_BROKER_LIST: broker:9092
+        SNS_TOPIC: arn:aws:sns:us-east-1:491728392546:monitoringSystem-eMail
       run: go test -v ./...
