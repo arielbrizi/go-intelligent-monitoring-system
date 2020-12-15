@@ -83,3 +83,22 @@ func NewImage2S3Adapter() *Image2S3Adapter {
 		uploader: *uploader,
 	}
 }
+
+///////////// For Test ////////////
+
+//Image2S3AdapterTest ...
+type Image2S3AdapterTest struct {
+	bucket   string //TODO: just one?
+	uploader s3manager.Uploader
+}
+
+//Save ...
+func (i2s3 *Image2S3AdapterTest) Save(image domain.Image) error {
+	return nil
+}
+
+//NewImage2S3AdapterTest initializes an NewImage2S3AdapterTest object.
+func NewImage2S3AdapterTest() *Image2S3AdapterTest {
+
+	return &Image2S3AdapterTest{}
+}
