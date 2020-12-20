@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func TestProcessImage(t *testing.T) {
+func TestAnalizeImage(t *testing.T) {
 	//Define the "Adapter Out" to be used to connect to the recognition core
 	var analizeAdapter recognitionapplicationportout.ImageRecognitionPort
 	analizeAdapter = recognitionadapterout.NewRekoAdapterTest()
