@@ -84,3 +84,29 @@ func NewRekoAdapter() *RekoAdapter {
 		svc: svc,
 	}
 }
+
+////////////////// For Test ////////////////////////
+
+//RekoAdapterTest ...
+type RekoAdapterTest struct {
+}
+
+//NewRekoAdapterTest initializes a RekoAdapter object.
+func NewRekoAdapterTest() *RekoAdapterTest {
+	return &RekoAdapterTest{}
+}
+
+//IndexFace add an authorized face to the Collection
+func (rekoAdapter *RekoAdapterTest) IndexFace(image domain.AuthorizedFace) error {
+	return nil
+}
+
+//CreateCollection if not exists
+func (rekoAdapter *RekoAdapterTest) CreateCollection(collectionName string) error {
+	return nil
+}
+
+//DeleteCollection if exists
+func (rekoAdapter *RekoAdapterTest) DeleteCollection(collectionName string) error {
+	return nil
+}
