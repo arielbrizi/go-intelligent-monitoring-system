@@ -89,3 +89,27 @@ func (reko *RekoAdapter) resultToAnalizedImage(result *rekognition.SearchFacesBy
 
 	return &analizedImage, nil
 }
+
+//////////////////// For Test //////////////////////////
+
+//RekoAdapterTest ...
+type RekoAdapterTest struct {
+	bucket string //TODO: just one?
+	svc    *rekognition.Rekognition
+}
+
+//Recognize ...
+func (reko *RekoAdapterTest) Recognize(image domain.Image) (*domain.AnalizedImage, error) {
+	var analizedImage domain.AnalizedImage
+	analizedImage.PersonNameDetected = "Ariel"
+	return &analizedImage, nil
+}
+
+//NewRekoAdapterTest initializes a RekoAdapterTest object.
+func NewRekoAdapterTest() *RekoAdapterTest {
+
+	return &RekoAdapterTest{
+		bucket: os.Getenv("CAMARA_DOMAIN"),
+	}
+
+}

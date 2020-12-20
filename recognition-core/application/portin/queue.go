@@ -4,5 +4,5 @@ import "go-intelligent-monitoring-system/domain"
 
 //QueueImagePort ...
 type QueueImagePort interface {
-	AnalizeImage(image domain.Image) error
+	AnalizeImage(image domain.Image) (*domain.AnalizedImage, error)
 }

@@ -28,8 +28,8 @@ services:
     command: go run main.go
     environment:
         - TZ=America/Argentina/Buenos_Aires
-        - AWS_ACCESS_KEY_ID=XXX
-        - AWS_SECRET_ACCESS_KEY=XXX
+        - AWS_ACCESS_KEY_ID=AKIAJ6U5KYXPRQYW7N7A
+        - AWS_SECRET_ACCESS_KEY=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
         - FTP_DIRECTORY=/home/ariel/fotos_pasillo/
         - CAMARA_DOMAIN=camarasilvia # In case of S3 it's used to define the "bucket" name
         - QUEUE_TOPIC=images
