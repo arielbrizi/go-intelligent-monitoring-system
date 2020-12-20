@@ -18,11 +18,11 @@ type ImageAnalizerService struct {
 }
 
 //AnalizeImage analize if faces on image are recognized or not
-func (ias *ImageAnalizerService) AnalizeImage(image domain.Image) error {
+func (ias *ImageAnalizerService) AnalizeImage(image domain.Image) (*domain.AnalizedImage, error) {
 
 	analizedImage, err := ias.analizeAdapter.Recognize(image)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if analizedImage.PersonNameDetected == "" {
@@ -35,7 +35,7 @@ func (ias *ImageAnalizerService) AnalizeImage(image domain.Image) error {
 		ias.imageStorageAdapter.SaveAuthorizedImage(image)
 	}
 
-	return nil
+	return analizedImage, nil
 }
 
 //NewImageAnalizerService ...

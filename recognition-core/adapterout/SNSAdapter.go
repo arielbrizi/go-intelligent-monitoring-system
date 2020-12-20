@@ -65,3 +65,33 @@ func NewSNSAdapter() *SNSAdapter {
 	}
 
 }
+
+///////////////////// For Test //////////////////////////////////////
+
+//NewSNSAdapterTest initializes a SNSAdapterTest object.
+func NewSNSAdapterTest() *SNSAdapterTest {
+
+	return &SNSAdapterTest{}
+
+}
+
+//SNSAdapterTest ...
+type SNSAdapterTest struct {
+}
+
+//NotifyTopic ...
+func (sn *SNSAdapterTest) NotifyTopic(notification domain.Notification) error {
+	return nil
+}
+
+//NotifySMS ...
+func (sn *SNSAdapterTest) NotifySMS(notification domain.SMSNotification) error {
+	//NOT USED ON AWS. THE TYPE OF CHANNEL IT'S CONFIGURED ON TOPIC
+	return nil
+}
+
+//NotifyEmail ...
+func (sn *SNSAdapterTest) NotifyEmail(notification domain.EmailNotification) error {
+	//NOT USED ON AWS. THE TYPE OF CHANNEL IT'S CONFIGURED ON TOPIC
+	return nil
+}
