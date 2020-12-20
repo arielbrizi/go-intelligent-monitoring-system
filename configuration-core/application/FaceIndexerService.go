@@ -14,7 +14,7 @@ type FaceIndexerService struct {
 }
 
 //AddAuthorizedFace ...
-func (fis *FaceIndexerService) AddAuthorizedFace(image []byte, name string) error {
+func (fis *FaceIndexerService) AddAuthorizedFace(image []byte, name string) (*domain.AuthorizedFace, error) {
 
 	var authorizedFace domain.AuthorizedFace
 
@@ -26,8 +26,11 @@ func (fis *FaceIndexerService) AddAuthorizedFace(image []byte, name string) erro
 	authorizedFace.CollectionName = collectionName
 
 	err := fis.rekoAdapter.IndexFace(authorizedFace)
+	if err != nil {
+		return nil, err
+	}
 
-	return err
+	return &authorizedFace, err
 }
 
 //DeleteAuthorizedFace ...
