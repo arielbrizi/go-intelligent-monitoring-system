@@ -3,7 +3,6 @@ module go-intelligent-monitoring-system
 go 1.14
 
 require (
-	bou.ke/monkey v1.0.2
 	github.com/Gurpartap/logrus-stack v0.0.0-20170710170904-89c00d8a28f4
 	github.com/aws/aws-sdk-go v1.34.27
 	github.com/esimov/pigo v1.4.2
