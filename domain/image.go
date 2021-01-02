@@ -5,6 +5,8 @@ type Image struct {
 	Name   string
 	Bucket string
 
+	URL string //To get the image file
+
 	Bytes []byte
 
 	//time
