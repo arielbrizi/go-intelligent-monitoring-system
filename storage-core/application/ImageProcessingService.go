@@ -50,6 +50,9 @@ func (ips *ImageProcessingService) ProcessImage(imgData []byte, fileName string)
 		return errSave
 	}
 
+	urlImage, _ := ips.StorageImageAdapter.GetURL(*image)
+	image.URL = urlImage
+
 	errSend := ips.Image2QueueService.SendImage2Queue(*image)
 	if errSend != nil {
 		return errSend

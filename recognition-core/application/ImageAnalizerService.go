@@ -58,7 +58,6 @@ func (ias *ImageAnalizerService) createNotification(image domain.Image) domain.N
 	notification.Topic = ias.snsTopic
 	notification.Type = "AWS_SNS_TOPIC"
 
-	//TODO: add S3 image Url
 	notification.Message = fmt.Sprintf("The person detected is not in your people authorize collection. Image analized name: %s", image.Name)
 
 	return notification
