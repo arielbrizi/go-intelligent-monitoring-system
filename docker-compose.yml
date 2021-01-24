@@ -19,6 +19,8 @@ services:
       KAFKA_CREATE_TOPICS: "images:1:1"
   app:
     image: golang:1.14.3
+    ports:
+      - "8080:8080" ## Share API port with host machine.
     depends_on:
       - broker
     volumes:
@@ -29,8 +31,8 @@ services:
     environment:
         ## General Variables
         - TZ=America/Argentina/Buenos_Aires
-        - AWS_ACCESS_KEY_ID=AKIAJ6U5KYXPRQYW7N7A
-        - AWS_SECRET_ACCESS_KEY=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
+        - AWS_ACCESS_KEY_ID=XXXXX
+        - AWS_SECRET_ACCESS_KEY=XXXXX
         - FTP_DIRECTORY=/home/ariel/fotos_pasillo/
         - CAMARA_DOMAIN=camarasilvia # In case of S3 it's used to define the "bucket" name
         - QUEUE_TOPIC=images

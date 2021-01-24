@@ -20,19 +20,23 @@ func main() {
 	log.AddHook(logrus_stack.StandardHook()) //Sets the time and code line on each log.
 	log.Info("Initializing Intelligent Monitoring System")
 
-	// --------------- Configuration Port IN --------------- //
+	// --------------- Configuration Core - Port IN --------------- //
 
 	confDirectoryAdapter := utils.NewConfDirectoryAdapter()
 	confDirectoryAdapter.AddAuthorizedFaces()
 
-	// --------------- Input Port IN--------------- //
+	// --------------- Storage Core - Port IN --------------- //
 
 	ftpToInputAdapter := utils.NewftpToInputAdapter()
 	go ftpToInputAdapter.Process()
 
-	// --------------- Queue PORT IN --------------- //
+	// --------------- Recognition Core - PORT IN --------------- //
 
 	queueInAdapter := utils.NewQueueInAdapter()
-	queueInAdapter.ReceiveImagesFromQueue()
+	go queueInAdapter.ReceiveImagesFromQueue()
+
+	// --------------- API from All Cores ---------------- //
+
+	utils.RunAPI()
 
 }

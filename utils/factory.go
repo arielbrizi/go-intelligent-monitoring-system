@@ -16,6 +16,8 @@ import (
 	storageapplication "go-intelligent-monitoring-system/storage-core/application"
 	storageapplicationportin "go-intelligent-monitoring-system/storage-core/application/portin"
 	storageapplicationportout "go-intelligent-monitoring-system/storage-core/application/portout"
+
+	"github.com/gin-gonic/gin"
 )
 
 //NewConfDirectoryAdapter ...
@@ -81,4 +83,45 @@ func NewQueueInAdapter() *recognitionadapterin.KafkaAdapter {
 
 	//"Adapter In": KafkaAdapter gets the images to be analized from Kafka
 	return recognitionadapterin.NewKafkaAdapter(imageAnalizerService)
+}
+
+//NewConfAPIAdapter ...
+func NewConfAPIAdapter() *configurationadapterin.APIAdapter {
+
+	//Define the "Adapter Out" to be used to connect to the recognition core
+	var rekoAdapter configurationapplicationportout.ImageRecognitionPort
+	rekoAdapter = configurationadapterout.NewRekoAdapter()
+
+	//Define the service to be  used between the "Adapter In" and the "Adapter Out"
+	var faceIndexerService configurationapplicationportin.ConfigurationPort
+	faceIndexerService = configurationapplication.NewFaceIndexerService(rekoAdapter)
+
+	//"Adapter In": APIAdapter sets the authorized face from the request
+	confAPIAdapter := configurationadapterin.NewAPIAdapter(faceIndexerService)
+
+	return confAPIAdapter
+
+}
+
+func addConfigurationCoreAPI(r *gin.Engine) {
+
+	confAPIAdapter := NewConfAPIAdapter()
+
+	r.GET("/configuration-core/authorized-face", confAPIAdapter.GetAuthorizedFacesHandler)
+	r.POST("/configuration-core/authorized-face", confAPIAdapter.AddAuthorizedFaceHandler)
+	r.DELETE("/configuration-core/authorized-face", confAPIAdapter.DeleteAuthorizedFaceHandler)
+}
+
+//RunAPI ...
+func RunAPI() {
+	r := gin.Default()
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
+
+	addConfigurationCoreAPI(r)
+
+	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
