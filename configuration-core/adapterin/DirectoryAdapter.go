@@ -33,7 +33,8 @@ func (da *DirectoryAdapter) AddAuthorizedFaces() error {
 			log.WithFields(log.Fields{"file": f.Name()}).WithError(err).Fatal("Procesing file")
 		}
 
-		_, err = da.faceIndexerService.AddAuthorizedFace(fileBytes, f.Name())
+		//TODO: save authorized Faces to be able to delete some of them (with faceID)
+		_, err = da.faceIndexerService.AddAuthorizedFace(fileBytes, f.Name(), "", "")
 		if err != nil {
 			log.WithFields(log.Fields{"file": f.Name()}).WithError(err).Error("Adding authorized face")
 			return err

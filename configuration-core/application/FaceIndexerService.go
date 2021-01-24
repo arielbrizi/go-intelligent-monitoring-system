@@ -10,53 +10,75 @@ import (
 
 //FaceIndexerService manage the images collection
 type FaceIndexerService struct {
-	rekoAdapter configurationapplicationportout.ImageRecognitionPort
+	recoAdapter configurationapplicationportout.ImageRecognitionPort
 }
 
 //AddAuthorizedFace ...
-func (fis *FaceIndexerService) AddAuthorizedFace(image []byte, name string) (*domain.AuthorizedFace, error) {
+func (fis *FaceIndexerService) AddAuthorizedFace(image []byte, name string, bucket string, collectionName string) (*domain.AuthorizedFace, error) {
 
 	var authorizedFace domain.AuthorizedFace
 
-	collectionName := os.Getenv("CAMARA_DOMAIN")
+	if collectionName == "" {
+		collectionName = os.Getenv("CAMARA_DOMAIN")
+	}
+
+	if bucket == "" {
+		bucket = collectionName
+	}
 
 	authorizedFace.Name = name
-	authorizedFace.Bucket = collectionName
+	authorizedFace.Bucket = bucket
 	authorizedFace.Bytes = image
 	authorizedFace.CollectionName = collectionName
 
-	err := fis.rekoAdapter.IndexFace(authorizedFace)
+	faceID, err := fis.recoAdapter.IndexFace(authorizedFace)
 	if err != nil {
 		return nil, err
 	}
+
+	authorizedFace.ID = *faceID
 
 	return &authorizedFace, err
 }
 
 //DeleteAuthorizedFace ...
-func (fis *FaceIndexerService) DeleteAuthorizedFace(image []byte, name string) error {
+func (fis *FaceIndexerService) DeleteAuthorizedFace(authorizedFace domain.AuthorizedFace) error {
 
-	//TODO DeleteAuthorizedFace
+	err := fis.recoAdapter.DeleteFace(authorizedFace)
 
-	return nil
+	return err
+
+}
+
+//GetAuthorizedFaces ...
+func (fis *FaceIndexerService) GetAuthorizedFaces(collectionName string) ([]domain.AuthorizedFace, error) {
+
+	authorizedFaces, err := fis.recoAdapter.ListFaces(collectionName)
+
+	return authorizedFaces, err
+
 }
 
 //NewFaceIndexerService ...
-func NewFaceIndexerService(rekoAdapter configurationapplicationportout.ImageRecognitionPort) *FaceIndexerService {
+func NewFaceIndexerService(recoAdapter configurationapplicationportout.ImageRecognitionPort) *FaceIndexerService {
 
 	fis := &FaceIndexerService{
-		rekoAdapter: rekoAdapter,
+		recoAdapter: recoAdapter,
 	}
 
 	collectionName := os.Getenv("CAMARA_DOMAIN")
 
-	fis.rekoAdapter.DeleteCollection(collectionName)
-
-	err := fis.rekoAdapter.CreateCollection(collectionName)
-
-	if err != nil {
-		log.WithFields(log.Fields{"collectionName": collectionName}).WithError(err).Fatal("Error Creating collection")
+	errDel := fis.recoAdapter.DeleteCollection(collectionName)
+	if errDel != nil {
+		log.WithFields(log.Fields{"collectionName": collectionName}).WithError(errDel).Fatal("Error deleting collection")
 	}
+	log.WithFields(log.Fields{"collectionName": collectionName}).Info("Collection Deleted")
+
+	errCreate := fis.recoAdapter.CreateCollection(collectionName)
+	if errCreate != nil {
+		log.WithFields(log.Fields{"collectionName": collectionName}).WithError(errCreate).Fatal("Error Creating collection")
+	}
+	log.WithFields(log.Fields{"collectionName": collectionName}).Info("Collection Created")
 
 	return fis
 }
