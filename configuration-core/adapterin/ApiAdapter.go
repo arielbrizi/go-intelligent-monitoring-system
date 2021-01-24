@@ -70,6 +70,12 @@ func (da *APIAdapter) GetAuthorizedFacesHandler(c *gin.Context) {
 
 	valuesMap := c.Request.URL.Query()
 
+	if len(valuesMap["collectionName"]) < 1 {
+		log.Error("Missing parameter collectionName")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing parameter collectionName"})
+		return
+	}
+
 	authorizedFaces, err := da.faceIndexerService.GetAuthorizedFaces(valuesMap["collectionName"][0])
 	if err != nil {
 		//TODO: Analize err and return known errors codes. Ex: 404 - imageRequest.Name doesn't exist
