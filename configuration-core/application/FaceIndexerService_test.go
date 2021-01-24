@@ -24,7 +24,7 @@ func TestAddAuthorizedFace(t *testing.T) {
 		t.Errorf("Error reading file: %v", err)
 	}
 
-	authorizedFace, err := faceIndexerService.AddAuthorizedFace(fileBytes, "3.jpg")
+	authorizedFace, err := faceIndexerService.AddAuthorizedFace(fileBytes, "3.jpg", "", "")
 	if err != nil {
 		t.Errorf("Error adding authorized face file: %v", err)
 	}

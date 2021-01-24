@@ -4,8 +4,8 @@ package domain
 type AuthorizedFace struct {
 	Name           string `json:"name"`
 	Bucket         string `json:"bucket"`
-	CollectionName string `json:"collection"`
-	ID             string `json:"id"`
+	CollectionName string `json:"collection" binding:"required"`
+	ID             string `json:"id" binding:"required"`
 
 	Bytes []byte
 }

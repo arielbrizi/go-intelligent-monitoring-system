@@ -14,14 +14,20 @@ type FaceIndexerService struct {
 }
 
 //AddAuthorizedFace ...
-func (fis *FaceIndexerService) AddAuthorizedFace(image []byte, name string) (*domain.AuthorizedFace, error) {
+func (fis *FaceIndexerService) AddAuthorizedFace(image []byte, name string, bucket string, collectionName string) (*domain.AuthorizedFace, error) {
 
 	var authorizedFace domain.AuthorizedFace
 
-	collectionName := os.Getenv("CAMARA_DOMAIN")
+	if collectionName == "" {
+		collectionName = os.Getenv("CAMARA_DOMAIN")
+	}
+
+	if bucket == "" {
+		bucket = collectionName
+	}
 
 	authorizedFace.Name = name
-	authorizedFace.Bucket = collectionName
+	authorizedFace.Bucket = bucket
 	authorizedFace.Bytes = image
 	authorizedFace.CollectionName = collectionName
 

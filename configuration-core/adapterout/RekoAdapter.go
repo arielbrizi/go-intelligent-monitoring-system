@@ -176,7 +176,14 @@ func (rekoAdapter *RekoAdapterTest) DeleteFace(image domain.AuthorizedFace) erro
 
 //ListFaces get indexed authorized faces in the Collection
 func (rekoAdapter *RekoAdapterTest) ListFaces(collectionName string) ([]domain.AuthorizedFace, error) {
-	return nil, nil
+	var authorizedFaces []domain.AuthorizedFace
+	var authorizedFace domain.AuthorizedFace
+	authorizedFace.Name = "silvia1.jpg"
+	authorizedFace.Bucket = "camarasilvia"
+	authorizedFace.CollectionName = "camarasilvia"
+	authorizedFace.ID = "2659022e-4ad2-4be8-81b9-1d4b1953ff90"
+	authorizedFaces = append(authorizedFaces, authorizedFace)
+	return authorizedFaces, nil
 }
 
 //CreateCollection if not exists

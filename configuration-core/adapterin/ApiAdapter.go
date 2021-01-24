@@ -28,7 +28,7 @@ func (da *APIAdapter) AddAuthorizedFaceHandler(c *gin.Context) {
 	log.WithFields(log.Fields{"imageRequest.Name": imageRequest.Name, "imageRequest.Bucket": imageRequest.Bucket}).Info("Adding face")
 
 	//The first parameter is nil, so the image will be found on bucket.
-	authorizedFace, err := da.faceIndexerService.AddAuthorizedFace(nil, imageRequest.Name)
+	authorizedFace, err := da.faceIndexerService.AddAuthorizedFace(nil, imageRequest.Name, imageRequest.Bucket, imageRequest.CollectionName)
 	if err != nil {
 		//TODO: Analize err and return known errors codes. Ex: 404 - imageRequest.Name doesn't exist
 		log.WithFields(log.Fields{"imageRequest.Name": imageRequest.Name, "imageRequest.Bucket": imageRequest.Bucket}).WithError(err).Error("Adding authorized face")

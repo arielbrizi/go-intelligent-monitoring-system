@@ -34,7 +34,7 @@ func (da *DirectoryAdapter) AddAuthorizedFaces() error {
 		}
 
 		//TODO: save authorized Faces to be able to delete some of them (with faceID)
-		_, err = da.faceIndexerService.AddAuthorizedFace(fileBytes, f.Name())
+		_, err = da.faceIndexerService.AddAuthorizedFace(fileBytes, f.Name(), "", "")
 		if err != nil {
 			log.WithFields(log.Fields{"file": f.Name()}).WithError(err).Error("Adding authorized face")
 			return err
