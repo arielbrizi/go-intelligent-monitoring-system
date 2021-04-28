@@ -1,0 +1,43 @@
+info:
+  contact:
+    email: arielbrizi@gmail.com
+    name: API Support
+    url: https://arielbrizi.github.io/go-intelligent-monitoring-system/
+  description: Configuration and Analize Services.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Intelligent Monitoring System
+  version: "1.0"
+paths:
+  /configuration-core/authorized-face:
+    post:
+      consumes:
+      - application/json
+      description: add the person in the image (parameter) as an authorized face
+      parameters:
+      - description: Image File Name with extension
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: Bucket ID
+        in: path
+        name: bucket
+        required: true
+        type: string
+      - description: Collection ID
+        in: path
+        name: collection
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: add authorized face
+      tags:
+      - authorized-face
+swagger: "2.0"

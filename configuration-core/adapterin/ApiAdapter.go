@@ -14,6 +14,17 @@ type APIAdapter struct {
 	faceIndexerService configurationapplicationportin.ConfigurationPort
 }
 
+// AddAuthorizedFaceHandler godoc
+// @Summary add authorized face
+// @Description add the person in the image (parameter) as an authorized face
+// @Tags authorized-face
+// @Accept  json
+// @Produce  json
+// @Param name path string true "Image File Name with extension"
+// @Param bucket path string true "Bucket ID"
+// @Param collection path string true "Collection ID"
+// @Success 200
+// @Router /configuration-core/authorized-face [post]
 //AddAuthorizedFaceHandler ...
 func (da *APIAdapter) AddAuthorizedFaceHandler(c *gin.Context) {
 
