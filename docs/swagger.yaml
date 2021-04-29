@@ -12,6 +12,29 @@ info:
   version: "1.0"
 paths:
   /configuration-core/authorized-face:
+    delete:
+      consumes:
+      - application/json
+      description: delete the person in the image (parameter) as an authorized face
+      parameters:
+      - description: Authorized FaceId
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: Collection ID
+        in: path
+        name: collection
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: delete authorized face
+      tags:
+      - configuration-core
     post:
       consumes:
       - application/json
@@ -39,5 +62,24 @@ paths:
           description: ""
       summary: add authorized face
       tags:
-      - authorized-face
+      - configuration-core
+  /configuration-core/authorized-face/{collectionName}:
+    get:
+      consumes:
+      - application/json
+      description: get the authorized faces for collection Id
+      parameters:
+      - description: Collection ID
+        in: path
+        name: collection
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: get authorized faces
+      tags:
+      - configuration-core
 swagger: "2.0"

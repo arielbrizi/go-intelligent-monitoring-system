@@ -42,7 +42,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "authorized-face"
+                    "configuration-core"
                 ],
                 "summary": "add authorized face",
                 "parameters": [
@@ -60,6 +60,69 @@ var doc = `{
                         "in": "path",
                         "required": true
                     },
+                    {
+                        "type": "string",
+                        "description": "Collection ID",
+                        "name": "collection",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "description": "delete the person in the image (parameter) as an authorized face",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "configuration-core"
+                ],
+                "summary": "delete authorized face",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorized FaceId",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Collection ID",
+                        "name": "collection",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/configuration-core/authorized-face/{collectionName}": {
+            "get": {
+                "description": "get the authorized faces for collection Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "configuration-core"
+                ],
+                "summary": "get authorized faces",
+                "parameters": [
                     {
                         "type": "string",
                         "description": "Collection ID",

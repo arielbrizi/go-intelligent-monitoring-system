@@ -17,7 +17,7 @@ type APIAdapter struct {
 // AddAuthorizedFaceHandler godoc
 // @Summary add authorized face
 // @Description add the person in the image (parameter) as an authorized face
-// @Tags authorized-face
+// @Tags configuration-core
 // @Accept  json
 // @Produce  json
 // @Param name path string true "Image File Name with extension"
@@ -51,6 +51,16 @@ func (da *APIAdapter) AddAuthorizedFaceHandler(c *gin.Context) {
 
 }
 
+// DeleteAuthorizedFaceHandler godoc
+// @Summary delete authorized face
+// @Description delete the person in the image (parameter) as an authorized face
+// @Tags configuration-core
+// @Accept  json
+// @Produce  json
+// @Param name path string true "Authorized FaceId"
+// @Param collection path string true "Collection ID"
+// @Success 200
+// @Router /configuration-core/authorized-face [delete]
 //DeleteAuthorizedFaceHandler ...
 func (da *APIAdapter) DeleteAuthorizedFaceHandler(c *gin.Context) {
 
@@ -76,6 +86,15 @@ func (da *APIAdapter) DeleteAuthorizedFaceHandler(c *gin.Context) {
 
 }
 
+// GetAuthorizedFacesHandler godoc
+// @Summary get authorized faces
+// @Description get the authorized faces for collection Id
+// @Tags configuration-core
+// @Accept  json
+// @Produce  json
+// @Param collection path string true "Collection ID"
+// @Success 200
+// @Router /configuration-core/authorized-face/{collectionName} [get]
 //GetAuthorizedFacesHandler ...
 func (da *APIAdapter) GetAuthorizedFacesHandler(c *gin.Context) {
 
