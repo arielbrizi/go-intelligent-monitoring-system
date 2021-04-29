@@ -20,9 +20,9 @@ type APIAdapter struct {
 // @Tags configuration-core
 // @Accept  json
 // @Produce  json
-// @Param name path string true "Image File Name with extension"
-// @Param bucket path string true "Bucket ID"
-// @Param collection path string true "Collection ID"
+// @Param name string string true "Image File Name with extension"
+// @Param bucket string string true "Bucket ID"
+// @Param collection string string true "Collection ID"
 // @Success 200
 // @Router /configuration-core/authorized-face [post]
 //AddAuthorizedFaceHandler ...
@@ -57,8 +57,8 @@ func (da *APIAdapter) AddAuthorizedFaceHandler(c *gin.Context) {
 // @Tags configuration-core
 // @Accept  json
 // @Produce  json
-// @Param name path string true "Authorized FaceId"
-// @Param collection path string true "Collection ID"
+// @Param name string string true "Authorized FaceId"
+// @Param collection string string true "Collection ID"
 // @Success 200
 // @Router /configuration-core/authorized-face [delete]
 //DeleteAuthorizedFaceHandler ...
@@ -92,7 +92,7 @@ func (da *APIAdapter) DeleteAuthorizedFaceHandler(c *gin.Context) {
 // @Tags configuration-core
 // @Accept  json
 // @Produce  json
-// @Param collection path string true "Collection ID"
+// @Param collectionName path string true "Collection ID"
 // @Success 200
 // @Router /configuration-core/authorized-face/{collectionName} [get]
 //GetAuthorizedFacesHandler ...
