@@ -50,21 +50,21 @@ var doc = `{
                         "type": "string",
                         "description": "Image File Name with extension",
                         "name": "name",
-                        "in": "path",
+                        "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "Bucket ID",
                         "name": "bucket",
-                        "in": "path",
+                        "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "Collection ID",
                         "name": "collection",
-                        "in": "path",
+                        "in": "formData",
                         "required": true
                     }
                 ],
@@ -91,14 +91,14 @@ var doc = `{
                         "type": "string",
                         "description": "Authorized FaceId",
                         "name": "name",
-                        "in": "path",
+                        "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "Collection ID",
                         "name": "collection",
-                        "in": "path",
+                        "in": "formData",
                         "required": true
                     }
                 ],
@@ -126,8 +126,8 @@ var doc = `{
                     {
                         "type": "string",
                         "description": "Collection ID",
-                        "name": "collection",
-                        "in": "path",
+                        "name": "collectionName",
+                        "in": "query",
                         "required": true
                     }
                 ],
