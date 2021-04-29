@@ -18,12 +18,12 @@ paths:
       description: delete the person in the image (parameter) as an authorized face
       parameters:
       - description: Authorized FaceId
-        in: path
+        in: formData
         name: name
         required: true
         type: string
       - description: Collection ID
-        in: path
+        in: formData
         name: collection
         required: true
         type: string
@@ -41,17 +41,17 @@ paths:
       description: add the person in the image (parameter) as an authorized face
       parameters:
       - description: Image File Name with extension
-        in: path
+        in: formData
         name: name
         required: true
         type: string
       - description: Bucket ID
-        in: path
+        in: formData
         name: bucket
         required: true
         type: string
       - description: Collection ID
-        in: path
+        in: formData
         name: collection
         required: true
         type: string
@@ -70,8 +70,8 @@ paths:
       description: get the authorized faces for collection Id
       parameters:
       - description: Collection ID
-        in: path
-        name: collection
+        in: query
+        name: collectionName
         required: true
         type: string
       produces:
