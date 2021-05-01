@@ -111,7 +111,7 @@ func addConfigurationCoreAPI(r *gin.Engine) {
 
 	confAPIAdapter := NewConfAPIAdapter()
 
-	r.GET("/configuration-core/authorized-face", confAPIAdapter.GetAuthorizedFacesHandler)
+	r.GET("/configuration-core/authorized-face/:collectionName", confAPIAdapter.GetAuthorizedFacesHandler)
 	r.POST("/configuration-core/authorized-face", confAPIAdapter.AddAuthorizedFaceHandler)
 	r.DELETE("/configuration-core/authorized-face", confAPIAdapter.DeleteAuthorizedFaceHandler)
 }

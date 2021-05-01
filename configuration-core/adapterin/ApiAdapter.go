@@ -20,9 +20,7 @@ type APIAdapter struct {
 // @Tags configuration-core
 // @Accept  json
 // @Produce  json
-// @Param name formData string true "Image File Name with extension"
-// @Param bucket formData string true "Bucket ID"
-// @Param collection formData string true "Collection ID"
+// @Param body body domain.Image true "name, bucket and collection are required"
 // @Success 200
 // @Router /configuration-core/authorized-face [post]
 //AddAuthorizedFaceHandler ...
@@ -57,8 +55,7 @@ func (da *APIAdapter) AddAuthorizedFaceHandler(c *gin.Context) {
 // @Tags configuration-core
 // @Accept  json
 // @Produce  json
-// @Param name formData string true "Authorized FaceId"
-// @Param collection formData string true "Collection ID"
+// @Param body body domain.AuthorizedFace true "Authorized FaceId (id), and Collection ID (collection) are required"
 // @Success 200
 // @Router /configuration-core/authorized-face [delete]
 //DeleteAuthorizedFaceHandler ...
@@ -92,24 +89,22 @@ func (da *APIAdapter) DeleteAuthorizedFaceHandler(c *gin.Context) {
 // @Tags configuration-core
 // @Accept  json
 // @Produce  json
-// @Param collectionName query string true "Collection ID"
+// @Param collectionName path string true "Collection ID"
 // @Success 200
 // @Router /configuration-core/authorized-face/{collectionName} [get]
 //GetAuthorizedFacesHandler ...
 func (da *APIAdapter) GetAuthorizedFacesHandler(c *gin.Context) {
 
-	valuesMap := c.Request.URL.Query()
-
-	if len(valuesMap["collectionName"]) < 1 {
-		log.Error("Missing parameter collectionName")
+	collectionName := c.Param("collectionName")
+	if collectionName == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing parameter collectionName"})
 		return
 	}
 
-	authorizedFaces, err := da.faceIndexerService.GetAuthorizedFaces(valuesMap["collectionName"][0])
+	authorizedFaces, err := da.faceIndexerService.GetAuthorizedFaces(collectionName)
 	if err != nil {
 		//TODO: Analize err and return known errors codes. Ex: 404 - imageRequest.Name doesn't exist
-		log.WithFields(log.Fields{"collectionName": valuesMap["collectionName"][0]}).WithError(err).Error("Error getting authorized faces")
+		log.WithFields(log.Fields{"collectionName": collectionName}).WithError(err).Error("Error getting authorized faces")
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
