@@ -1,3 +1,51 @@
+definitions:
+  domain.AuthorizedFace:
+    properties:
+      bucket:
+        type: string
+      bytes:
+        items:
+          type: integer
+        type: array
+      collection:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    required:
+    - collection
+    - id
+    type: object
+  domain.Image:
+    properties:
+      bucket:
+        type: string
+      bytes:
+        items:
+          type: integer
+        type: array
+      collection:
+        type: string
+      day:
+        type: string
+      hour:
+        description: time
+        type: string
+      month:
+        type: string
+      name:
+        type: string
+      url:
+        description: To get the image file
+        type: string
+      year:
+        type: string
+    required:
+    - bucket
+    - collection
+    - name
+    type: object
 info:
   contact:
     email: arielbrizi@gmail.com
@@ -17,16 +65,12 @@ paths:
       - application/json
       description: delete the person in the image (parameter) as an authorized face
       parameters:
-      - description: Authorized FaceId
-        in: formData
-        name: name
+      - description: Authorized FaceId (id), and Collection ID (collection) are required
+        in: body
+        name: body
         required: true
-        type: string
-      - description: Collection ID
-        in: formData
-        name: collection
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/domain.AuthorizedFace'
       produces:
       - application/json
       responses:
@@ -40,21 +84,12 @@ paths:
       - application/json
       description: add the person in the image (parameter) as an authorized face
       parameters:
-      - description: Image File Name with extension
-        in: formData
-        name: name
+      - description: name, bucket and collection are required
+        in: body
+        name: body
         required: true
-        type: string
-      - description: Bucket ID
-        in: formData
-        name: bucket
-        required: true
-        type: string
-      - description: Collection ID
-        in: formData
-        name: collection
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/domain.Image'
       produces:
       - application/json
       responses:
@@ -70,7 +105,7 @@ paths:
       description: get the authorized faces for collection Id
       parameters:
       - description: Collection ID
-        in: query
+        in: path
         name: collectionName
         required: true
         type: string

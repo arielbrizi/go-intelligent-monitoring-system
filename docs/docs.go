@@ -47,25 +47,13 @@ var doc = `{
                 "summary": "add authorized face",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Image File Name with extension",
-                        "name": "name",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Bucket ID",
-                        "name": "bucket",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Collection ID",
-                        "name": "collection",
-                        "in": "formData",
-                        "required": true
+                        "description": "name, bucket and collection are required",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.Image"
+                        }
                     }
                 ],
                 "responses": {
@@ -88,18 +76,13 @@ var doc = `{
                 "summary": "delete authorized face",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Authorized FaceId",
-                        "name": "name",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Collection ID",
-                        "name": "collection",
-                        "in": "formData",
-                        "required": true
+                        "description": "Authorized FaceId (id), and Collection ID (collection) are required",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.AuthorizedFace"
+                        }
                     }
                 ],
                 "responses": {
@@ -127,7 +110,7 @@ var doc = `{
                         "type": "string",
                         "description": "Collection ID",
                         "name": "collectionName",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -135,6 +118,77 @@ var doc = `{
                     "200": {
                         "description": ""
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "domain.AuthorizedFace": {
+            "type": "object",
+            "required": [
+                "collection",
+                "id"
+            ],
+            "properties": {
+                "bucket": {
+                    "type": "string"
+                },
+                "bytes": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "collection": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.Image": {
+            "type": "object",
+            "required": [
+                "bucket",
+                "collection",
+                "name"
+            ],
+            "properties": {
+                "bucket": {
+                    "type": "string"
+                },
+                "bytes": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "collection": {
+                    "type": "string"
+                },
+                "day": {
+                    "type": "string"
+                },
+                "hour": {
+                    "description": "time",
+                    "type": "string"
+                },
+                "month": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "url": {
+                    "description": "To get the image file",
+                    "type": "string"
+                },
+                "year": {
+                    "type": "string"
                 }
             }
         }
