@@ -99,7 +99,7 @@ func TestGetAddAuthorizedFaces(t *testing.T) {
 	confAPIAdapter := NewAPIAdapter(faceIndexerService)
 
 	router := gin.Default()
-	router.GET("/configuration-core/authorized-face", confAPIAdapter.GetAuthorizedFacesHandler)
+	router.GET("/configuration-core/authorized-face/:collectionName", confAPIAdapter.GetAuthorizedFacesHandler)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/configuration-core/authorized-face/camarasilvia", nil)
