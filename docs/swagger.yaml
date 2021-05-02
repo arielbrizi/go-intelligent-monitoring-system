@@ -94,7 +94,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: ""
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.AuthorizedFace'
       summary: add authorized face
       tags:
       - configuration-core
@@ -113,7 +115,11 @@ paths:
       - application/json
       responses:
         "200":
-          description: ""
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.AuthorizedFace'
+            type: array
       summary: get authorized faces
       tags:
       - configuration-core

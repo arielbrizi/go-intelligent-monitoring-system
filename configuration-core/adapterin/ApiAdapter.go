@@ -21,7 +21,7 @@ type APIAdapter struct {
 // @Accept  json
 // @Produce  json
 // @Param body body domain.Image true "name, bucket and collection are required"
-// @Success 200
+// @Success 200 {object} domain.AuthorizedFace
 // @Router /configuration-core/authorized-face [post]
 //AddAuthorizedFaceHandler ...
 func (da *APIAdapter) AddAuthorizedFaceHandler(c *gin.Context) {
@@ -90,7 +90,7 @@ func (da *APIAdapter) DeleteAuthorizedFaceHandler(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param collectionName path string true "Collection ID"
-// @Success 200
+// @Success 200 {array} domain.AuthorizedFace
 // @Router /configuration-core/authorized-face/{collectionName} [get]
 //GetAuthorizedFacesHandler ...
 func (da *APIAdapter) GetAuthorizedFacesHandler(c *gin.Context) {
@@ -109,7 +109,7 @@ func (da *APIAdapter) GetAuthorizedFacesHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"authorizedFaces": authorizedFaces})
+	c.JSON(http.StatusOK, authorizedFaces)
 }
 
 //NewAPIAdapter initializes an NewApiAdapter object.

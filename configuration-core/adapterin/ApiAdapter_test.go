@@ -105,7 +105,7 @@ func TestGetAddAuthorizedFaces(t *testing.T) {
 	req, _ := http.NewRequest("GET", "/configuration-core/authorized-face/camarasilvia", nil)
 	router.ServeHTTP(w, req)
 	assert.Equal(t, 200, w.Code)
-	assert.Equal(t, "{\"authorizedFaces\":[{\"name\":\"silvia1.jpg\",\"bucket\":\"camarasilvia\",\"collection\":\"camarasilvia\",\"id\":\"2659022e-4ad2-4be8-81b9-1d4b1953ff90\",\"Bytes\":null}]}", w.Body.String())
+	assert.Equal(t, "[{\"name\":\"silvia1.jpg\",\"bucket\":\"camarasilvia\",\"collection\":\"camarasilvia\",\"id\":\"2659022e-4ad2-4be8-81b9-1d4b1953ff90\",\"Bytes\":null}]", w.Body.String())
 
 	//without collectionName parameter
 	w = httptest.NewRecorder()
