@@ -25,7 +25,7 @@ Coming soon: Api Adapter
 
 ## API Documentation - Swagger
 [editor.swagger.io](https://editor.swagger.io/?url=https://raw.githubusercontent.com/arielbrizi/go-intelligent-monitoring-system/develop/docs/swagger.yaml) (It's also automatically published on .../swagger/index.html)
-
+- Documentation about configuration and service annotations: https://github.com/swaggo/gin-swagger 
 
 ## * Installation
 
