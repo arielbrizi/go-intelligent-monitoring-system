@@ -42,7 +42,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.AuthorizedFace"
+                        }
                     }
                 }
             },
@@ -100,7 +103,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.AuthorizedFace"
+                            }
+                        }
                     }
                 }
             }

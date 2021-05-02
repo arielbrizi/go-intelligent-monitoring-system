@@ -58,7 +58,10 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.AuthorizedFace"
+                        }
                     }
                 }
             },
@@ -116,7 +119,13 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": ""
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.AuthorizedFace"
+                            }
+                        }
                     }
                 }
             }
