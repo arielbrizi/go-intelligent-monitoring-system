@@ -42,6 +42,6 @@ services:
         - AWS_ACCESS_KEY_ID=XXX
         - AWS_SECRET_ACCESS_KEY=XXX
         ## Telegram variables
-        - TELEGRAM_BOT_TOKEN=1633724157:AAGRG6YkJYMdBbdTjrpVJkKXk4VH8mDyzFE
+        - TELEGRAM_BOT_TOKEN=XXX
         - TELEGRAM_CHANNEL=@notifims
         - TELEGRAM_USER=@arielbrizi
