@@ -1,5 +1,13 @@
 @startuml
 namespace configurationadapterin {
+    class APIAdapter << (S,Aquamarine) >> {
+        - faceIndexerService portin.ConfigurationPort
+
+        + AddAuthorizedFaceHandler(c *gin.Context) 
+        + DeleteAuthorizedFaceHandler(c *gin.Context) 
+        + GetAuthorizedFacesHandler(c *gin.Context) 
+
+    }
     class DirectoryAdapter << (S,Aquamarine) >> {
         - faceIndexerService portin.ConfigurationPort
 
@@ -9,6 +17,7 @@ namespace configurationadapterin {
 }
 
 
+"configurationadapterin.APIAdapter" o-- "portin.ConfigurationPort"
 "configurationadapterin.DirectoryAdapter" o-- "portin.ConfigurationPort"
 
 namespace configurationadapterout {
@@ -17,21 +26,33 @@ namespace configurationadapterout {
 
         + DeleteCollection(collectionName string) error
         + CreateCollection(collectionName string) error
-        + IndexFace(image domain.AuthorizedFace) error
+        + IndexFace(image domain.AuthorizedFace) (*string, error)
+        + DeleteFace(authorizedFace domain.AuthorizedFace) error
+        + ListFaces(collectionName string) ([]domain.AuthorizedFace, error)
+
+    }
+    class RekoAdapterTest << (S,Aquamarine) >> {
+        + IndexFace(image domain.AuthorizedFace) (*string, error)
+        + DeleteFace(image domain.AuthorizedFace) error
+        + ListFaces(collectionName string) ([]domain.AuthorizedFace, error)
+        + CreateCollection(collectionName string) error
+        + DeleteCollection(collectionName string) error
 
     }
 }
 
 "configurationapplicationportout.ImageRecognitionPort" <|-- "configurationadapterout.RekoAdapter"
+"configurationapplicationportout.ImageRecognitionPort" <|-- "configurationadapterout.RekoAdapterTest"
 
 "configurationadapterout.RekoAdapter" o-- "rekognition.Rekognition"
 
 namespace configurationapplication {
     class FaceIndexerService << (S,Aquamarine) >> {
-        - rekoAdapter portout.ImageRecognitionPort
+        - recoAdapter portout.ImageRecognitionPort
 
-        + AddAuthorizedFace(image []byte, name string) error
-        + DeleteAuthorizedFace(image []byte, name string) error
+        + AddAuthorizedFace(image []byte, name string, bucket string, collectionName string) (*domain.AuthorizedFace, error)
+        + DeleteAuthorizedFace(authorizedFace domain.AuthorizedFace) error
+        + GetAuthorizedFaces(collectionName string) ([]domain.AuthorizedFace, error)
 
     }
 }
@@ -42,8 +63,9 @@ namespace configurationapplication {
 
 namespace configurationapplicationportin {
     interface ConfigurationPort  {
-        + AddAuthorizedFace(image []byte, name string) error
-        + DeleteAuthorizedFace(image []byte, name string) error
+        + AddAuthorizedFace(image []byte, name string, bucket string, collectionName string) (*domain.AuthorizedFace, error)
+        + DeleteAuthorizedFace( domain.AuthorizedFace) error
+        + GetAuthorizedFaces(collectionName string) ([]domain.AuthorizedFace, error)
 
     }
 }
@@ -54,7 +76,9 @@ namespace configurationapplicationportout {
     interface ImageRecognitionPort  {
         + DeleteCollection(collectionName string) error
         + CreateCollection(collectionName string) error
-        + IndexFace(authorizedFace domain.AuthorizedFace) error
+        + IndexFace(authorizedFace domain.AuthorizedFace) (*string, error)
+        + DeleteFace(authorizedFace domain.AuthorizedFace) error
+        + ListFaces(collectionName string) ([]domain.AuthorizedFace, error)
 
     }
 }

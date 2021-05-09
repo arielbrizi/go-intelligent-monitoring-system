@@ -27,7 +27,7 @@ func (ias *ImageAnalizerService) AnalizeImage(image domain.Image) (*domain.Anali
 
 	if analizedImage.PersonNameDetected == "" {
 		notification := ias.createNotification(image)
-		ias.notificationAdapter.NotifyTopic(notification)
+		ias.notificationAdapter.NotifyUnauthorizedFace(notification)
 		log.WithFields(log.Fields{"notification.Message": notification.Message, "notification.Topic": notification.Topic, "notification.Type": notification.Type, "analizedImage.Name": analizedImage.Name, "analizedImage.RecognitionCoreResponse": string(analizedImage.RecognitionCoreResponse)}).Info("Image correctly analized but Person is not Authorized")
 		ias.imageStorageAdapter.SaveNotAuthorizedImage(image)
 	} else {

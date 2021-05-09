@@ -15,8 +15,14 @@ type SNSAdapter struct {
 	svc *sns.SNS
 }
 
-//NotifyTopic ...
-func (sn *SNSAdapter) NotifyTopic(notification domain.Notification) error {
+//NotifyInitializedSystem
+func (ta *SNSAdapter) NotifyInitializedSystem() error {
+	//TODO
+	return nil
+}
+
+//NotifyUnauthorizedFace ...
+func (sn *SNSAdapter) NotifyUnauthorizedFace(notification domain.Notification) error {
 
 	msg := notification.Message + "\n \n " + notification.Image.URL + "\n \n "
 
@@ -33,18 +39,6 @@ func (sn *SNSAdapter) NotifyTopic(notification domain.Notification) error {
 
 	log.WithFields(log.Fields{"notification.Topic": notification.Topic, "notification.Message": notification.Message, "result": result}).Info("Message correctly sent")
 
-	return nil
-}
-
-//NotifySMS ...
-func (sn *SNSAdapter) NotifySMS(notification domain.SMSNotification) error {
-	//NOT USED ON AWS. THE TYPE OF CHANNEL IT'S CONFIGURED ON TOPIC
-	return nil
-}
-
-//NotifyEmail ...
-func (sn *SNSAdapter) NotifyEmail(notification domain.EmailNotification) error {
-	//NOT USED ON AWS. THE TYPE OF CHANNEL IT'S CONFIGURED ON TOPIC
 	return nil
 }
 
@@ -78,18 +72,11 @@ type SNSAdapterTest struct {
 }
 
 //NotifyTopic ...
-func (sn *SNSAdapterTest) NotifyTopic(notification domain.Notification) error {
+func (sn *SNSAdapterTest) NotifyUnauthorizedFace(notification domain.Notification) error {
 	return nil
 }
 
-//NotifySMS ...
-func (sn *SNSAdapterTest) NotifySMS(notification domain.SMSNotification) error {
-	//NOT USED ON AWS. THE TYPE OF CHANNEL IT'S CONFIGURED ON TOPIC
-	return nil
-}
-
-//NotifyEmail ...
-func (sn *SNSAdapterTest) NotifyEmail(notification domain.EmailNotification) error {
-	//NOT USED ON AWS. THE TYPE OF CHANNEL IT'S CONFIGURED ON TOPIC
+//NotifyInitializedSystem ...
+func (sn *SNSAdapterTest) NotifyInitializedSystem() error {
 	return nil
 }

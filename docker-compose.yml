@@ -31,15 +31,18 @@ services:
     environment:
         ## General Variables
         - TZ=America/Argentina/Buenos_Aires
-        - AWS_ACCESS_KEY_ID=XXXXX
-        - AWS_SECRET_ACCESS_KEY=XXXXX
         - FTP_DIRECTORY=/home/ariel/fotos_pasillo/
         - CAMARA_DOMAIN=camarasilvia # In case of S3 it's used to define the "bucket" name
         - QUEUE_TOPIC=images
         - QUEUE_BROKER_LIST=broker:9092 #abc.com/kafka1/:80,abc.com/kafka2/:80,abc.com/kafka3/:80
-        - SNS_TOPIC=arn:aws:sns:us-east-1:491728392546:monitoringSystem-eMail
         - AUTHORIZED_FACES_DIRECTORY=/home/ariel/fotos_pasillo/authorized_faces/
         ## AWS variables
         - AWS_S3_BUCKET_POLICY={"Version":"2012-10-17","Statement":[{"Sid":"PublicRead","Effect":"Allow","Principal":"*","Action":["s3:GetObject","s3:GetObjectVersion"],"Resource":"arn:aws:s3:::camarasilvia/*"}]} ## Where camarasilvia must be same as CAMARA_DOMAIN variable
-        
+        - SNS_TOPIC=arn:aws:sns:us-east-1:491728392546:monitoringSystem-eMail
+        - AWS_ACCESS_KEY_ID=XXX
+        - AWS_SECRET_ACCESS_KEY=XXX
+        ## Telegram variables
+        - TELEGRAM_BOT_TOKEN=1633724157:AAGRG6YkJYMdBbdTjrpVJkKXk4VH8mDyzFE
+        - TELEGRAM_CHANNEL=@notifims
+        - TELEGRAM_USER=@arielbrizi
 
