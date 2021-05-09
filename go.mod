@@ -19,5 +19,6 @@ require (
 	github.com/swaggo/gin-swagger v1.3.0
 	github.com/swaggo/swag v1.7.0
 	github.com/tebeka/strftime v0.1.5 // indirect
+	gopkg.in/tucnak/telebot.v2 v2.3.5
 	gotest.tools v2.2.0+incompatible
 )

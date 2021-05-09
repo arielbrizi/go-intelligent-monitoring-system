@@ -75,7 +75,8 @@ func NewQueueInAdapter() *recognitionadapterin.KafkaAdapter {
 
 	//Define the "Adapter Out" to be used to connect to notification core
 	var notificationAdapter recognitionapplicationportout.NotificationPort
-	notificationAdapter = recognitionadapterout.NewSNSAdapter()
+	//notificationAdapter = recognitionadapterout.NewSNSAdapter()
+	notificationAdapter = recognitionadapterout.NewTelegramAdapter()
 
 	//Define the "Adapter Out" to be used to save categorized images (authorized, not authorized, etc)
 	var imageStorageAdapter recognitionapplicationportout.ImageStoragePort
