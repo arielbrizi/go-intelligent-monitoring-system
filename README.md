@@ -40,29 +40,23 @@ I developed it implementing Hexagonal Architecture (or Ports & Adapters architec
 4) Set Up Environment variables in "docker-compose.yml" file:
 
 ```
-    ## General Variables
-    - AWS_ACCESS_KEY_ID=XXX
-
-    - AWS_SECRET_ACCESS_KEY=XXX
-
-    - FTP_DIRECTORY=/home/ariel/fotos_pasillo/ #Directory where your FTP Server save your images.
-
-    - CAMARA_DOMAIN=camarasilvia # In case of S3 it's used to define the "bucket" name
-
-    - QUEUE_TOPIC=images #Don't need to change It
-
-    - QUEUE_BROKER_LIST=broker:9092 #Don't need to change It
-
-    - SNS_TOPIC=arn:aws:sns:us-east-1:491728392546:monitoringSystem-eMail #Previously configured On AWS
-
-    - AUTHORIZED_FACES_DIRECTORY=/home/ariel/fotos_pasillo/authorized_faces/ #Faces you want to define as authorized in JPG files  
-
-    - TELEGRAM_BOT_TOKEN=xxxxxxxxxxxxxxxxX
-    - TELEGRAM_CHANNEL=@notifims #The telegram username/channel will be used to send notifications like unauthorized person detected
-    - TELEGRAM_USER=@arielbrizi
-
-
-    ## AWS variables
-    - AWS_S3_BUCKET_POLICY={"Version":"2012-10-17","Statement":[{"Sid":"PublicRead","Effect":"Allow","Principal":"*","Action":["s3:GetObject","s3:GetObjectVersion"],"Resource":"arn:aws:s3:::camarasilvia/*"}]} ## Where camarasilvia must be same as CAMARA_DOMAIN variable
+        ## General Variables
+        - TZ=America/Argentina/Buenos_Aires
+        - FTP_DIRECTORY=/home/ariel/fotos_pasillo/
+        - CAMARA_DOMAIN=camarasilvia # In case of S3 it's used to define the "bucket" name
+        - QUEUE_TOPIC=images
+        - QUEUE_BROKER_LIST=broker:9092 #abc.com/kafka1/:80,abc.com/kafka2/:80,abc.com/kafka3/:80
+        - AUTHORIZED_FACES_DIRECTORY=/home/ariel/fotos_pasillo/authorized_faces/
+        ## AWS variables
+        - AWS_S3_BUCKET_POLICY={"Version":"2012-10-17","Statement":[{"Sid":"PublicRead","Effect":"Allow","Principal":"*","Action":["s3:GetObject","s3:GetObjectVersion"],"Resource":"arn:aws:s3:::camarasilvia/*"}]} ## Where camarasilvia must be same as CAMARA_DOMAIN variable
+        - SNS_TOPIC=arn:aws:sns:us-east-1:491728392546:monitoringSystem-eMail
+        - AWS_ACCESS_KEY_ID=XXX
+        - AWS_SECRET_ACCESS_KEY=XXX
+        ## Telegram variables
+        - TELEGRAM_BOT_TOKEN=XXX
+        - TELEGRAM_CHANNEL=@notifims
+        - TELEGRAM_USER=@arielbrizi
+        ## Notification Type - The adapter to be used
+        - NOTIFICATION_TYPE=TELEGRAM # TELEGRAM | SNS
 ```
 5) - Run "sudo docker-compose up -d" from your go-intelligent-monitoring-system directory. If you have problems check 'service docker status'. If it's neccesary run 'sudo service docker start'
