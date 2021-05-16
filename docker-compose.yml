@@ -45,3 +45,5 @@ services:
         - TELEGRAM_BOT_TOKEN=XXX
         - TELEGRAM_CHANNEL=@notifims
         - TELEGRAM_USER=@arielbrizi
+        ## Notification Type - The adapter to be used
+        - NOTIFICATION_TYPE=TELEGRAM # TELEGRAM | SNS

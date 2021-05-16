@@ -23,13 +23,23 @@ Coming soon: Api Adapter
 
 ## Installation
 
-### - Pre-Requisites
 
-* Install FTP Server. Recommended: [Install WingFTP in very simple steps](documentation/wingFTP/README.md)
+1) Install FTP Server. Recommended: [Install WingFTP in very simple steps](documentation/wingFTP/README.md)
 
-* Set the Ip of the FTP server in your IP cameras. Some models have movement detection and send the image captured to the destination defined.
+2) Set the Ip of the FTP server in your IP cameras. On movement detection, cameras will send the image captured  to the FTP server defined.
 
-* Set Up Environment variables in "docker-compose.yml" file:
+3) Notification Configuration. You can choose 2 options (adapters)
+    - Telegram 
+        - [Create BOT ](https://core.telegram.org/bots#3-how-do-i-create-a-bot)
+        You can do it from your mobile-app. You will use the Bot to receive notifications and send him "commands" using telegram chat.
+        - Create a Telegram channel from your mobile-app. The bot can only send notifications to channels. You can add all the people you want to this channel to receive notifications.
+    - AWS SNS 
+        - [Create AWS SNS Topic](https://docs.aws.amazon.com/sns/latest/dg/sns-create-topic.html)
+        - [Create topic subscription (e-mail, SMS, etc)](https://docs.aws.amazon.com/sns/latest/dg/sns-create-subscribe-endpoint-to-topic.html)
+
+
+
+4) Set Up Environment variables in "docker-compose.yml" file:
 
 ```
     ## General Variables
@@ -57,4 +67,4 @@ Coming soon: Api Adapter
     ## AWS variables
     - AWS_S3_BUCKET_POLICY={"Version":"2012-10-17","Statement":[{"Sid":"PublicRead","Effect":"Allow","Principal":"*","Action":["s3:GetObject","s3:GetObjectVersion"],"Resource":"arn:aws:s3:::camarasilvia/*"}]} ## Where camarasilvia must be same as CAMARA_DOMAIN variable
 ```
-### - Run "sudo docker-compose up -d" from your go-intelligent-monitoring-system directory. If you have problems check 'service docker status'. If it's neccesary run 'sudo service docker start'
+5) - Run "sudo docker-compose up -d" from your go-intelligent-monitoring-system directory. If you have problems check 'service docker status'. If it's neccesary run 'sudo service docker start'
