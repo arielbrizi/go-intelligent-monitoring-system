@@ -26,7 +26,9 @@ I developed it implementing Hexagonal Architecture (or Ports & Adapters architec
 
 2) Set the Ip of the FTP server in your IP cameras. On movement detection, cameras will send the image captured  to the FTP server defined.
 
-3) Notification Configuration. You can choose 2 options (adapters)
+3) Create a directory and put all the photos of people who is authorized by you. Try to find photos with just one person on it. When you run the application, they will be added to the collection of known people. The directory must be that one you set on docker-compose.yml as "AUTHORIZED_FACES_DIRECTORY"
+
+4) Notification Configuration. You can choose 2 options (adapters)
     - Telegram 
         - [Create BOT ](https://core.telegram.org/bots#3-how-do-i-create-a-bot)
         You can do it from your mobile-app. You will use the Bot to receive notifications and send him "commands" using telegram chat.
@@ -37,6 +39,6 @@ I developed it implementing Hexagonal Architecture (or Ports & Adapters architec
 
 
 
-4) [Set Up Environment variables in "docker-compose.yml" file](https://github.com/arielbrizi/go-intelligent-monitoring-system/blob/develop/docker-compose.yml#L31)
+5) [Set Up Environment variables in "docker-compose.yml" file](https://github.com/arielbrizi/go-intelligent-monitoring-system/blob/develop/docker-compose.yml#L31)
 
-5) - Run "sudo docker-compose up -d" from your go-intelligent-monitoring-system directory. If you have problems check 'service docker status'. If it's neccesary run 'sudo service docker start'
+6) - Run "sudo docker-compose up -d" from your go-intelligent-monitoring-system directory. If you have problems check 'service docker status'. If it's neccesary run 'sudo service docker start'
