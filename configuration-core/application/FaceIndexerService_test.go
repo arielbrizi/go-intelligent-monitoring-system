@@ -4,6 +4,9 @@ import (
 	configurationadapterout "go-intelligent-monitoring-system/configuration-core/adapterout"
 	configurationapplicationportin "go-intelligent-monitoring-system/configuration-core/application/portin"
 	configurationapplicationportout "go-intelligent-monitoring-system/configuration-core/application/portout"
+	storageadapterout "go-intelligent-monitoring-system/storage-core/adapterout"
+	storageapplicationportout "go-intelligent-monitoring-system/storage-core/application/portout"
+
 	"io/ioutil"
 
 	"testing"
@@ -15,9 +18,13 @@ func TestAddAuthorizedFace(t *testing.T) {
 	var rekoAdapter configurationapplicationportout.ImageRecognitionPort
 	rekoAdapter = configurationadapterout.NewRekoAdapterTest()
 
+	//Define the "Adapter Out" to be used to connect to the storage core
+	var storageImageAdapter storageapplicationportout.StorageImagePort
+	storageImageAdapter = storageadapterout.NewImage2S3AdapterTest()
+
 	//Define the service to be  used between the "Adapter In" and the "Adapter Out"
 	var faceIndexerService configurationapplicationportin.ConfigurationPort
-	faceIndexerService = NewFaceIndexerService(rekoAdapter)
+	faceIndexerService = NewFaceIndexerService(storageImageAdapter, rekoAdapter)
 
 	fileBytes, err := ioutil.ReadFile("../../test/images/withFaces/3.jpg")
 	if err != nil {
