@@ -3,6 +3,7 @@ package configurationapplication
 import (
 	configurationapplicationportout "go-intelligent-monitoring-system/configuration-core/application/portout"
 	"go-intelligent-monitoring-system/domain"
+	storageapplicationportout "go-intelligent-monitoring-system/storage-core/application/portout"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -10,7 +11,8 @@ import (
 
 //FaceIndexerService manage the images collection
 type FaceIndexerService struct {
-	recoAdapter configurationapplicationportout.ImageRecognitionPort
+	recoAdapter         configurationapplicationportout.ImageRecognitionPort
+	storageImageAdapter storageapplicationportout.StorageImagePort
 }
 
 //AddAuthorizedFace ...
@@ -24,6 +26,14 @@ func (fis *FaceIndexerService) AddAuthorizedFace(image []byte, name string, buck
 
 	if bucket == "" {
 		bucket = collectionName
+	}
+
+	if image != nil && len(image) > 1 { //Save image to bucket before indexing it
+		err := fis.storageImageAdapter.Save(getImage(image, name, bucket, collectionName))
+		if err != nil {
+			log.WithFields(log.Fields{"authorizedFace.Name": name, "authorizedFace.Bucket": bucket, "authorizedFace.CollectionName": collectionName}).WithError(err).Error("Error saving authorized face")
+			return nil, err
+		}
 	}
 
 	authorizedFace.Name = name
@@ -60,10 +70,11 @@ func (fis *FaceIndexerService) GetAuthorizedFaces(collectionName string) ([]doma
 }
 
 //NewFaceIndexerService ...
-func NewFaceIndexerService(recoAdapter configurationapplicationportout.ImageRecognitionPort) *FaceIndexerService {
+func NewFaceIndexerService(storageImageAdapter storageapplicationportout.StorageImagePort, recoAdapter configurationapplicationportout.ImageRecognitionPort) *FaceIndexerService {
 
 	fis := &FaceIndexerService{
-		recoAdapter: recoAdapter,
+		storageImageAdapter: storageImageAdapter,
+		recoAdapter:         recoAdapter,
 	}
 
 	collectionName := os.Getenv("CAMARA_DOMAIN")
@@ -81,4 +92,15 @@ func NewFaceIndexerService(recoAdapter configurationapplicationportout.ImageReco
 	log.WithFields(log.Fields{"collectionName": collectionName}).Info("Collection Created")
 
 	return fis
+}
+
+func getImage(imageBytes []byte, name string, bucket string, collectionName string) domain.Image {
+
+	var image domain.Image
+	image.Bytes = imageBytes
+	image.Name = name
+	image.Bucket = bucket
+	image.CollectionName = collectionName
+	return image
+
 }

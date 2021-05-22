@@ -57,22 +57,16 @@ func (rekoAdapter *RekoAdapter) IndexFace(image domain.AuthorizedFace) (*string,
 		CollectionId:    aws.String(image.CollectionName),
 		ExternalImageId: aws.String(image.Name),
 		MaxFaces:        aws.Int64(1), // Just index the biggest face
-	}
-
-	if image.Bytes == nil || len(image.Bytes) < 1 { // Get From Bucket. Image had been saved before.
-		input.Image = &rekognition.Image{
+		Image: &rekognition.Image{
 			S3Object: &rekognition.S3Object{
 				Bucket: aws.String(image.Bucket),
 				Name:   aws.String(image.Name),
 			},
-		}
-	} else { // Get From received Bytes
-		input.Image = &rekognition.Image{
-			Bytes: image.Bytes,
-		}
+		},
 	}
 
 	result, err := rekoAdapter.svc.IndexFaces(input)
+
 	if err != nil {
 		log.WithFields(log.Fields{"authorizedFace.Name": image.Name, "authorizedFace.Bucket": image.Bucket, "authorizedFace.CollectionName": image.CollectionName, "result": result}).WithError(err).Error("Error indexing face")
 		return nil, err
