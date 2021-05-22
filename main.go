@@ -8,6 +8,18 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// @title Intelligent Monitoring System
+// @version 1.0
+// @description Configuration and Analize Services.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url https://arielbrizi.github.io/go-intelligent-monitoring-system/
+// @contact.email arielbrizi@gmail.com
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
 func main() {
 
 	log.SetFormatter(&log.JSONFormatter{})
@@ -20,19 +32,23 @@ func main() {
 	log.AddHook(logrus_stack.StandardHook()) //Sets the time and code line on each log.
 	log.Info("Initializing Intelligent Monitoring System")
 
-	// --------------- Configuration Port IN --------------- //
+	// --------------- Configuration Core - Port IN --------------- //
 
 	confDirectoryAdapter := utils.NewConfDirectoryAdapter()
 	confDirectoryAdapter.AddAuthorizedFaces()
 
-	// --------------- Input Port IN--------------- //
+	// --------------- Storage Core - Port IN --------------- //
 
 	ftpToInputAdapter := utils.NewftpToInputAdapter()
 	go ftpToInputAdapter.Process()
 
-	// --------------- Queue PORT IN --------------- //
+	// --------------- Recognition Core - PORT IN --------------- //
 
 	queueInAdapter := utils.NewQueueInAdapter()
-	queueInAdapter.ReceiveImagesFromQueue()
+	go queueInAdapter.ReceiveImagesFromQueue()
+
+	// --------------- API from All Cores ---------------- //
+
+	utils.RunAPI()
 
 }

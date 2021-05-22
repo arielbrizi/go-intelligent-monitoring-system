@@ -18,16 +18,16 @@ type ImageAnalizerService struct {
 }
 
 //AnalizeImage analize if faces on image are recognized or not
-func (ias *ImageAnalizerService) AnalizeImage(image domain.Image) error {
+func (ias *ImageAnalizerService) AnalizeImage(image domain.Image) (*domain.AnalizedImage, error) {
 
 	analizedImage, err := ias.analizeAdapter.Recognize(image)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if analizedImage.PersonNameDetected == "" {
 		notification := ias.createNotification(image)
-		ias.notificationAdapter.NotifyTopic(notification)
+		ias.notificationAdapter.NotifyUnauthorizedFace(notification)
 		log.WithFields(log.Fields{"notification.Message": notification.Message, "notification.Topic": notification.Topic, "notification.Type": notification.Type, "analizedImage.Name": analizedImage.Name, "analizedImage.RecognitionCoreResponse": string(analizedImage.RecognitionCoreResponse)}).Info("Image correctly analized but Person is not Authorized")
 		ias.imageStorageAdapter.SaveNotAuthorizedImage(image)
 	} else {
@@ -35,7 +35,7 @@ func (ias *ImageAnalizerService) AnalizeImage(image domain.Image) error {
 		ias.imageStorageAdapter.SaveAuthorizedImage(image)
 	}
 
-	return nil
+	return analizedImage, nil
 }
 
 //NewImageAnalizerService ...
@@ -58,7 +58,6 @@ func (ias *ImageAnalizerService) createNotification(image domain.Image) domain.N
 	notification.Topic = ias.snsTopic
 	notification.Type = "AWS_SNS_TOPIC"
 
-	//TODO: add S3 image Url
 	notification.Message = fmt.Sprintf("The person detected is not in your people authorize collection. Image analized name: %s", image.Name)
 
 	return notification

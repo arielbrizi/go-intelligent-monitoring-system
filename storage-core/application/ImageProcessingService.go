@@ -12,8 +12,8 @@ import (
 
 //ImageProcessingService filter image without faces on it and send it to the Queue
 type ImageProcessingService struct {
-	image2QueueService  Image2QueueService
-	storageImageAdapter storageapplicationportout.StorageImagePort
+	Image2QueueService  Image2QueueService
+	StorageImageAdapter storageapplicationportout.StorageImagePort
 }
 
 //ProcessImage analize if image has faces to send it to the Queue.
@@ -45,12 +45,15 @@ func (ips *ImageProcessingService) ProcessImage(imgData []byte, fileName string)
 		//TODO: complete all image attributes
 	}
 
-	errSave := ips.storageImageAdapter.Save(*image)
+	errSave := ips.StorageImageAdapter.Save(*image)
 	if errSave != nil {
 		return errSave
 	}
 
-	errSend := ips.image2QueueService.SendImage2Queue(*image)
+	urlImage, _ := ips.StorageImageAdapter.GetURL(*image)
+	image.URL = urlImage
+
+	errSend := ips.Image2QueueService.SendImage2Queue(*image)
 	if errSend != nil {
 		return errSend
 	}
@@ -63,8 +66,8 @@ func NewImageProcessingService(storageImageAdapter storageapplicationportout.Sto
 	i2qs := NewImage2QueueService(queueAdapter)
 
 	ips := &ImageProcessingService{
-		storageImageAdapter: storageImageAdapter,
-		image2QueueService:  *i2qs,
+		StorageImageAdapter: storageImageAdapter,
+		Image2QueueService:  *i2qs,
 	}
 
 	return ips

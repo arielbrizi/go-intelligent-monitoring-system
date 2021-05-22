@@ -3,6 +3,7 @@ package configurationapplication
 import (
 	configurationapplicationportout "go-intelligent-monitoring-system/configuration-core/application/portout"
 	"go-intelligent-monitoring-system/domain"
+	storageapplicationportout "go-intelligent-monitoring-system/storage-core/application/portout"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -10,50 +11,96 @@ import (
 
 //FaceIndexerService manage the images collection
 type FaceIndexerService struct {
-	rekoAdapter configurationapplicationportout.ImageRecognitionPort
+	recoAdapter         configurationapplicationportout.ImageRecognitionPort
+	storageImageAdapter storageapplicationportout.StorageImagePort
 }
 
 //AddAuthorizedFace ...
-func (fis *FaceIndexerService) AddAuthorizedFace(image []byte, name string) error {
+func (fis *FaceIndexerService) AddAuthorizedFace(image []byte, name string, bucket string, collectionName string) (*domain.AuthorizedFace, error) {
 
 	var authorizedFace domain.AuthorizedFace
 
-	collectionName := os.Getenv("CAMARA_DOMAIN")
+	if collectionName == "" {
+		collectionName = os.Getenv("CAMARA_DOMAIN")
+	}
+
+	if bucket == "" {
+		bucket = collectionName
+	}
+
+	if image != nil && len(image) > 1 { //Save image to bucket before indexing it
+		err := fis.storageImageAdapter.Save(getImage(image, name, bucket, collectionName))
+		if err != nil {
+			log.WithFields(log.Fields{"authorizedFace.Name": name, "authorizedFace.Bucket": bucket, "authorizedFace.CollectionName": collectionName}).WithError(err).Error("Error saving authorized face")
+			return nil, err
+		}
+	}
 
 	authorizedFace.Name = name
-	authorizedFace.Bucket = collectionName
+	authorizedFace.Bucket = bucket
 	authorizedFace.Bytes = image
 	authorizedFace.CollectionName = collectionName
 
-	err := fis.rekoAdapter.IndexFace(authorizedFace)
+	faceID, err := fis.recoAdapter.IndexFace(authorizedFace)
+	if err != nil {
+		return nil, err
+	}
 
-	return err
+	authorizedFace.ID = *faceID
+
+	return &authorizedFace, err
 }
 
 //DeleteAuthorizedFace ...
-func (fis *FaceIndexerService) DeleteAuthorizedFace(image []byte, name string) error {
+func (fis *FaceIndexerService) DeleteAuthorizedFace(authorizedFace domain.AuthorizedFace) error {
 
-	//TODO DeleteAuthorizedFace
+	err := fis.recoAdapter.DeleteFace(authorizedFace)
 
-	return nil
+	return err
+
+}
+
+//GetAuthorizedFaces ...
+func (fis *FaceIndexerService) GetAuthorizedFaces(collectionName string) ([]domain.AuthorizedFace, error) {
+
+	authorizedFaces, err := fis.recoAdapter.ListFaces(collectionName)
+
+	return authorizedFaces, err
+
 }
 
 //NewFaceIndexerService ...
-func NewFaceIndexerService(rekoAdapter configurationapplicationportout.ImageRecognitionPort) *FaceIndexerService {
+func NewFaceIndexerService(storageImageAdapter storageapplicationportout.StorageImagePort, recoAdapter configurationapplicationportout.ImageRecognitionPort) *FaceIndexerService {
 
 	fis := &FaceIndexerService{
-		rekoAdapter: rekoAdapter,
+		storageImageAdapter: storageImageAdapter,
+		recoAdapter:         recoAdapter,
 	}
 
 	collectionName := os.Getenv("CAMARA_DOMAIN")
 
-	fis.rekoAdapter.DeleteCollection(collectionName)
-
-	err := fis.rekoAdapter.CreateCollection(collectionName)
-
-	if err != nil {
-		log.WithFields(log.Fields{"collectionName": collectionName}).WithError(err).Fatal("Error Creating collection")
+	errDel := fis.recoAdapter.DeleteCollection(collectionName)
+	if errDel != nil {
+		log.WithFields(log.Fields{"collectionName": collectionName}).WithError(errDel).Fatal("Error deleting collection")
 	}
+	log.WithFields(log.Fields{"collectionName": collectionName}).Info("Collection Deleted")
+
+	errCreate := fis.recoAdapter.CreateCollection(collectionName)
+	if errCreate != nil {
+		log.WithFields(log.Fields{"collectionName": collectionName}).WithError(errCreate).Fatal("Error Creating collection")
+	}
+	log.WithFields(log.Fields{"collectionName": collectionName}).Info("Collection Created")
 
 	return fis
+}
+
+func getImage(imageBytes []byte, name string, bucket string, collectionName string) domain.Image {
+
+	var image domain.Image
+	image.Bytes = imageBytes
+	image.Name = name
+	image.Bucket = bucket
+	image.CollectionName = collectionName
+	return image
+
 }

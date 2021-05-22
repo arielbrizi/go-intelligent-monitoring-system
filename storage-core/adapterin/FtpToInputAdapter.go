@@ -18,6 +18,9 @@ type FtpToInputAdapter struct {
 
 //Process all images on FTP directory
 func (ftp *FtpToInputAdapter) Process() {
+
+	scope := os.Getenv("SCOPE")
+
 	var t = time.Now()
 	var today = t.Format("20060102")
 	var ftpDirectory = os.Getenv("FTP_DIRECTORY")
@@ -26,7 +29,10 @@ func (ftp *FtpToInputAdapter) Process() {
 	var ftpTodayDirectoryFacesNotAuth = strings.Replace(ftpTodayDirectory, today, today+"_faces_not_auth", 1)
 	var ftpTodayDirectoryFacesAuth = strings.Replace(ftpTodayDirectory, today, today+"_faces_auth", 1)
 
-	createFolders(ftpTodayDirectory, ftpTodayDirectoryProcessed, ftpTodayDirectoryFacesNotAuth, ftpTodayDirectoryFacesAuth)
+	errCreateFolders := createFolders(ftpTodayDirectory, ftpTodayDirectoryProcessed, ftpTodayDirectoryFacesNotAuth, ftpTodayDirectoryFacesAuth)
+	if errCreateFolders != nil && !strings.Contains(errCreateFolders.Error(), "file exist") {
+		log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory}).WithError(errCreateFolders).Fatal("Error creating directories")
+	}
 
 	for {
 		t = time.Now()
@@ -39,7 +45,10 @@ func (ftp *FtpToInputAdapter) Process() {
 			ftpTodayDirectoryFacesNotAuth = strings.Replace(ftpTodayDirectory, today, today+"_faces_not_auth", 1)
 			ftpTodayDirectoryFacesAuth = strings.Replace(ftpTodayDirectory, today, today+"_faces_auth", 1)
 
-			createFolders(ftpTodayDirectory, ftpTodayDirectoryProcessed, ftpTodayDirectoryFacesNotAuth, ftpTodayDirectoryFacesAuth)
+			errCreateFolders := createFolders(ftpTodayDirectory, ftpTodayDirectoryProcessed, ftpTodayDirectoryFacesNotAuth, ftpTodayDirectoryFacesAuth)
+			if errCreateFolders != nil && !strings.Contains(errCreateFolders.Error(), "file exist") {
+				log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory}).WithError(errCreateFolders).Fatal("Error creating directories")
+			}
 		}
 
 		files, err := ioutil.ReadDir(ftpTodayDirectory)
@@ -73,6 +82,9 @@ func (ftp *FtpToInputAdapter) Process() {
 
 		}
 
+		if scope == "test" {
+			return
+		}
 		time.Sleep(5 * time.Second)
 	}
 
@@ -86,13 +98,28 @@ func NewFtpToInputAdapter(imageProcessingService storageapplicationportin.InputI
 	}
 }
 
-func createFolders(ftpTodayDirectory string, ftpTodayDirectoryProcessed string, ftpTodayDirectoryFacesNotAuth string, ftpTodayDirectoryFacesAuth string) {
+func createFolders(ftpTodayDirectory string, ftpTodayDirectoryProcessed string, ftpTodayDirectoryFacesNotAuth string, ftpTodayDirectoryFacesAuth string) error {
 	//Create ftpTodayDirectory
-	_ = os.Mkdir(ftpTodayDirectory, os.ModePerm)
+	err := os.Mkdir(ftpTodayDirectory, os.ModePerm)
+	if err != nil && !strings.Contains(err.Error(), "file exist") {
+		return err
+	}
+
 	//Create ftpTodayDirectoryProcessed
-	_ = os.Mkdir(ftpTodayDirectoryProcessed, os.ModePerm)
+	err = os.Mkdir(ftpTodayDirectoryProcessed, os.ModePerm)
+	if err != nil && !strings.Contains(err.Error(), "file exist") {
+		return err
+	}
 	//Create ftpTodayDirectoryFacesNotAuth: where images processed are saved.
-	_ = os.Mkdir(ftpTodayDirectoryFacesNotAuth, os.ModePerm)
+	err = os.Mkdir(ftpTodayDirectoryFacesNotAuth, os.ModePerm)
+	if err != nil && !strings.Contains(err.Error(), "file exist") {
+		return err
+	}
 	//Create ftpTodayDirectoryFacesAuth: where images processed are saved.
-	_ = os.Mkdir(ftpTodayDirectoryFacesAuth, os.ModePerm)
+	err = os.Mkdir(ftpTodayDirectoryFacesAuth, os.ModePerm)
+	if err != nil && !strings.Contains(err.Error(), "file exist") {
+		return err
+	}
+
+	return err
 }

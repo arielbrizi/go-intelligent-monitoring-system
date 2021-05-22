@@ -1,0 +1,126 @@
+definitions:
+  domain.AuthorizedFace:
+    properties:
+      bucket:
+        type: string
+      bytes:
+        items:
+          type: integer
+        type: array
+      collection:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    required:
+    - collection
+    - id
+    type: object
+  domain.Image:
+    properties:
+      bucket:
+        type: string
+      bytes:
+        items:
+          type: integer
+        type: array
+      collection:
+        type: string
+      day:
+        type: string
+      hour:
+        description: time
+        type: string
+      month:
+        type: string
+      name:
+        type: string
+      url:
+        description: To get the image file
+        type: string
+      year:
+        type: string
+    required:
+    - bucket
+    - collection
+    - name
+    type: object
+info:
+  contact:
+    email: arielbrizi@gmail.com
+    name: API Support
+    url: https://arielbrizi.github.io/go-intelligent-monitoring-system/
+  description: Configuration and Analize Services.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Intelligent Monitoring System
+  version: "1.0"
+paths:
+  /configuration-core/authorized-face:
+    delete:
+      consumes:
+      - application/json
+      description: delete the person in the image (parameter) as an authorized face
+      parameters:
+      - description: Authorized FaceId (id), and Collection ID (collection) are required
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.AuthorizedFace'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: delete authorized face
+      tags:
+      - configuration-core
+    post:
+      consumes:
+      - application/json
+      description: add the person in the image (parameter) as an authorized face
+      parameters:
+      - description: name, bucket and collection are required
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Image'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.AuthorizedFace'
+      summary: add authorized face
+      tags:
+      - configuration-core
+  /configuration-core/authorized-face/{collectionName}:
+    get:
+      consumes:
+      - application/json
+      description: get the authorized faces for collection Id
+      parameters:
+      - description: Collection ID
+        in: path
+        name: collectionName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.AuthorizedFace'
+            type: array
+      summary: get authorized faces
+      tags:
+      - configuration-core
+swagger: "2.0"

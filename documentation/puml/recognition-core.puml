@@ -14,6 +14,20 @@ namespace recognitionadapterin {
 "recognitionadapterin.KafkaAdapter" o-- "portin.QueueImagePort"
 
 namespace recognitionadapterout {
+    class FtpImageStorageAdapter << (S,Aquamarine) >> {
+        - ftpDirectory string
+
+        + SaveNotAuthorizedImage(image domain.Image) error
+        + SaveAuthorizedImage(image domain.Image) error
+
+    }
+    class FtpImageStorageAdapterTest << (S,Aquamarine) >> {
+        - ftpDirectory string
+
+        + SaveNotAuthorizedImage(image domain.Image) error
+        + SaveAuthorizedImage(image domain.Image) error
+
+    }
     class RekoAdapter << (S,Aquamarine) >> {
         - bucket string
         - svc *rekognition.Rekognition
@@ -23,28 +37,58 @@ namespace recognitionadapterout {
         + Recognize(image domain.Image) (*domain.AnalizedImage, error)
 
     }
+    class RekoAdapterTest << (S,Aquamarine) >> {
+        - bucket string
+        - svc *rekognition.Rekognition
+
+        + Recognize(image domain.Image) (*domain.AnalizedImage, error)
+
+    }
     class SNSAdapter << (S,Aquamarine) >> {
         - svc *sns.SNS
 
-        + NotifyTopic(notification domain.Notification) error
-        + NotifySMS(notification domain.SMSNotification) error
-        + NotifyEmail(notification domain.EmailNotification) error
+        + NotifyInitializedSystem() error
+        + NotifyUnauthorizedFace(notification domain.Notification) error
+
+    }
+    class SNSAdapterTest << (S,Aquamarine) >> {
+        + NotifyUnauthorizedFace(notification domain.Notification) error
+        + NotifyInitializedSystem() error
+
+    }
+    class TelegramAdapter << (S,Aquamarine) >> {
+        - bot *telebot.v2.Bot
+
+        + Recipient() string
+        + NotifyInitializedSystem() error
+        + NotifyUnauthorizedFace(notification domain.Notification) error
 
     }
 }
 
+"recognitionapplicationportout.ImageStoragePort" <|-- "recognitionadapterout.FtpImageStorageAdapter"
+"recognitionapplicationportout.ImageStoragePort" <|-- "recognitionadapterout.FtpImageStorageAdapterTest"
 "recognitionapplicationportout.ImageRecognitionPort" <|-- "recognitionadapterout.RekoAdapter"
+"recognitionapplicationportout.ImageRecognitionPort" <|-- "recognitionadapterout.RekoAdapterTest"
 "recognitionapplicationportout.NotificationPort" <|-- "recognitionadapterout.SNSAdapter"
+"recognitionapplicationportout.NotificationPort" <|-- "recognitionadapterout.SNSAdapterTest"
+"recognitionapplicationportout.NotificationPort" <|-- "recognitionadapterout.TelegramAdapter"
 
 "recognitionadapterout.RekoAdapter" o-- "rekognition.Rekognition"
+"recognitionadapterout.RekoAdapterTest" o-- "rekognition.Rekognition"
 "recognitionadapterout.SNSAdapter" o-- "sns.SNS"
+"recognitionadapterout.TelegramAdapter" o-- "telebot.v2.Bot"
 
 namespace recognitionapplication {
     class ImageAnalizerService << (S,Aquamarine) >> {
         - analizeAdapter portout.ImageRecognitionPort
         - notificationAdapter portout.NotificationPort
+        - imageStorageAdapter portout.ImageStoragePort
+        - snsTopic string
 
-        + AnalizeImage(image domain.Image) error
+        - createNotification(image domain.Image) domain.Notification
+
+        + AnalizeImage(image domain.Image) (*domain.AnalizedImage, error)
 
     }
 }
@@ -52,11 +96,12 @@ namespace recognitionapplication {
 "recognitionapplicationportin.QueueImagePort" <|-- "recognitionapplication.ImageAnalizerService"
 
 "recognitionapplication.ImageAnalizerService" o-- "portout.ImageRecognitionPort"
+"recognitionapplication.ImageAnalizerService" o-- "portout.ImageStoragePort"
 "recognitionapplication.ImageAnalizerService" o-- "portout.NotificationPort"
 
 namespace recognitionapplicationportin {
     interface QueueImagePort  {
-        + AnalizeImage(image domain.Image) error
+        + AnalizeImage(image domain.Image) (*domain.AnalizedImage, error)
 
     }
 }
@@ -68,10 +113,14 @@ namespace recognitionapplicationportout {
         + Recognize(image domain.Image) (*domain.AnalizedImage, error)
 
     }
+    interface ImageStoragePort  {
+        + SaveAuthorizedImage(image domain.Image) error
+        + SaveNotAuthorizedImage(image domain.Image) error
+
+    }
     interface NotificationPort  {
-        + NotifyTopic(notification domain.Notification) error
-        + NotifySMS(notification domain.SMSNotification) error
-        + NotifyEmail(notification domain.EmailNotification) error
+        + NotifyUnauthorizedFace(notification domain.Notification) error
+        + NotifyInitializedSystem() error
 
     }
 }

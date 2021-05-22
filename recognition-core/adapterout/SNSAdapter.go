@@ -15,12 +15,16 @@ type SNSAdapter struct {
 	svc *sns.SNS
 }
 
-//NotifyTopic ...
-func (sn *SNSAdapter) NotifyTopic(notification domain.Notification) error {
+//NotifyInitializedSystem
+func (ta *SNSAdapter) NotifyInitializedSystem() error {
+	//TODO
+	return nil
+}
 
-	url := "https://" + notification.Image.Bucket + ".s3.amazonaws.com/" + notification.Image.Name
+//NotifyUnauthorizedFace ...
+func (sn *SNSAdapter) NotifyUnauthorizedFace(notification domain.Notification) error {
 
-	msg := notification.Message + "\n \n " + url + "\n \n "
+	msg := notification.Message + "\n \n " + notification.Image.URL + "\n \n "
 
 	input := &sns.PublishInput{
 		Message:  aws.String(msg),
@@ -38,18 +42,6 @@ func (sn *SNSAdapter) NotifyTopic(notification domain.Notification) error {
 	return nil
 }
 
-//NotifySMS ...
-func (sn *SNSAdapter) NotifySMS(notification domain.SMSNotification) error {
-	//NOT USED ON AWS. THE TYPE OF CHANNEL IT'S CONFIGURED ON TOPIC
-	return nil
-}
-
-//NotifyEmail ...
-func (sn *SNSAdapter) NotifyEmail(notification domain.EmailNotification) error {
-	//NOT USED ON AWS. THE TYPE OF CHANNEL IT'S CONFIGURED ON TOPIC
-	return nil
-}
-
 //NewSNSAdapter initializes a SNSAdapter object.
 func NewSNSAdapter() *SNSAdapter {
 
@@ -64,4 +56,27 @@ func NewSNSAdapter() *SNSAdapter {
 		svc: svc,
 	}
 
+}
+
+///////////////////// For Test //////////////////////////////////////
+
+//NewSNSAdapterTest initializes a SNSAdapterTest object.
+func NewSNSAdapterTest() *SNSAdapterTest {
+
+	return &SNSAdapterTest{}
+
+}
+
+//SNSAdapterTest ...
+type SNSAdapterTest struct {
+}
+
+//NotifyTopic ...
+func (sn *SNSAdapterTest) NotifyUnauthorizedFace(notification domain.Notification) error {
+	return nil
+}
+
+//NotifyInitializedSystem ...
+func (sn *SNSAdapterTest) NotifyInitializedSystem() error {
+	return nil
 }

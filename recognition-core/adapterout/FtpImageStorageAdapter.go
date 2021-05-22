@@ -58,3 +58,29 @@ func (isa *FtpImageStorageAdapter) SaveAuthorizedImage(image domain.Image) error
 
 	return err
 }
+
+////////// For Test ///////////
+
+//FtpImageStorageAdapterTest ...
+type FtpImageStorageAdapterTest struct {
+	ftpDirectory string
+}
+
+//NewFtpImageStorageAdapterTest initializes a FtpImageStorageAdapterTest object.
+func NewFtpImageStorageAdapterTest() *FtpImageStorageAdapterTest {
+
+	return &FtpImageStorageAdapterTest{
+		ftpDirectory: os.Getenv("FTP_DIRECTORY"),
+	}
+
+}
+
+//SaveNotAuthorizedImage move image to faces not authorized directory
+func (isa *FtpImageStorageAdapterTest) SaveNotAuthorizedImage(image domain.Image) error {
+	return nil
+}
+
+//SaveAuthorizedImage move image to faces authorized directory
+func (isa *FtpImageStorageAdapterTest) SaveAuthorizedImage(image domain.Image) error {
+	return nil
+}
