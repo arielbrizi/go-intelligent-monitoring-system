@@ -14,7 +14,6 @@ import (
 //FtpToInputAdapter ...
 type FtpToInputAdapter struct {
 	imageProcessingService storageapplicationportin.InputImagePort
-	video2ImageService     storageapplicationportin.InputVideoPort
 }
 
 //Process all images on FTP directory
