@@ -25,7 +25,7 @@ func (reko *RekoAdapter) Recognize(image domain.Image) (*domain.AnalizedImage, e
 
 	input := &rekognition.SearchFacesByImageInput{
 		CollectionId:       aws.String(collectionName),
-		FaceMatchThreshold: aws.Float64(95.000000),
+		FaceMatchThreshold: aws.Float64(80.000000),
 		Image: &rekognition.Image{
 			S3Object: &rekognition.S3Object{
 				Bucket: aws.String(image.Bucket),

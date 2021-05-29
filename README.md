@@ -41,4 +41,4 @@ I developed it implementing Hexagonal Architecture (or Ports & Adapters architec
 
 5) [Set Up Environment variables in "docker-compose.yml" file](https://github.com/arielbrizi/go-intelligent-monitoring-system/blob/develop/docker-compose.yml#L31)
 
-6) - Run "sudo docker-compose up -d" from your go-intelligent-monitoring-system directory. If you have problems check 'service docker status'. If it's neccesary run 'sudo service docker start'
+6) - Run "sudo docker-compose up --build -d" from your go-intelligent-monitoring-system directory. If you have problems check 'service docker status'. If it's neccesary run 'sudo service docker start'

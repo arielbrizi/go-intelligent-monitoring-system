@@ -71,12 +71,8 @@ func NewftpToInputAdapter() *storageadapterin.FtpToInputAdapter {
 	var imageProcessingService storageapplicationportin.InputImagePort
 	imageProcessingService = storageapplication.NewImageProcessingService(storageImageAdapter, queueAdapterOut)
 
-	//Define the service to be  used between the "Adapter In" and the "Adapter Out" for Videos
-	var video2ImageService storageapplicationportin.InputVideoPort
-	video2ImageService = storageapplication.NewVideo2ImageService()
-
 	//"Adapter In": FtpToInputAdapter gets the images to be analized from FTP directory
-	return storageadapterin.NewFtpToInputAdapter(imageProcessingService, video2ImageService)
+	return storageadapterin.NewFtpToInputAdapter(imageProcessingService)
 
 }
 

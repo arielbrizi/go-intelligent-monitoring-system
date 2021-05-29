@@ -3,7 +3,6 @@ package storageadapterin
 import (
 	storageadapterout "go-intelligent-monitoring-system/storage-core/adapterout"
 	storageapplication "go-intelligent-monitoring-system/storage-core/application"
-	storageapplicationportin "go-intelligent-monitoring-system/storage-core/application/portin"
 	storageapplicationportout "go-intelligent-monitoring-system/storage-core/application/portout"
 	"io/ioutil"
 	"time"
@@ -36,12 +35,8 @@ func TestProcess(test *testing.T) {
 
 	imageProcessingService := storageapplication.NewImageProcessingService(storageImageAdapter, queueAdapterOut)
 
-	//Define the service to be  used between the "Adapter In" and the "Adapter Out" for Videos
-	var video2ImageService storageapplicationportin.InputVideoPort
-	video2ImageService = storageapplication.NewVideo2ImageService()
-
 	//"Adapter In": FtpToInputAdapter gets the images to be analized from FTP directory
-	ftpToInputAdapter := NewFtpToInputAdapter(imageProcessingService, video2ImageService)
+	ftpToInputAdapter := NewFtpToInputAdapter(imageProcessingService)
 	ftpToInputAdapter.Process()
 
 	files, _ = ioutil.ReadDir("../../test/FtpToInputAdapter/" + today + "_processed")

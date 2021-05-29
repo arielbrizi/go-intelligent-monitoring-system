@@ -8,12 +8,12 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
+	ffmpeg "github.com/u2takey/ffmpeg-go"
 )
 
 //FtpToInputAdapter ...
 type FtpToInputAdapter struct {
 	imageProcessingService storageapplicationportin.InputImagePort
-	video2ImageService     storageapplicationportin.InputVideoPort
 }
 
 //Process all images on FTP directory
@@ -66,7 +66,8 @@ func (ftp *FtpToInputAdapter) Process() {
 			if strings.HasSuffix(f.Name(), ".jpg") {
 				err = ftp.imageProcessingService.ProcessImage(fileBytes, f.Name())
 			} else if strings.HasSuffix(f.Name(), ".mp4") {
-				err = ftp.video2ImageService.ProcessVideo(fileBytes, f.Name())
+				//Export 1 frame/sec from video to N jpg images in the same directory
+				err = ffmpeg.Input(ftpTodayDirectory+f.Name()).Output(ftpTodayDirectory+f.Name()+"_%d.jpg", ffmpeg.KwArgs{"vf": "fps=1", "qscale:v": 2}).Run()
 			}
 
 			if err == nil {
@@ -91,10 +92,9 @@ func (ftp *FtpToInputAdapter) Process() {
 }
 
 //NewFtpToInputAdapter initializes an FtpToInputAdapter object.
-func NewFtpToInputAdapter(imageProcessingService storageapplicationportin.InputImagePort, video2ImageService storageapplicationportin.InputVideoPort) *FtpToInputAdapter {
+func NewFtpToInputAdapter(imageProcessingService storageapplicationportin.InputImagePort) *FtpToInputAdapter {
 	return &FtpToInputAdapter{
 		imageProcessingService: imageProcessingService,
-		video2ImageService:     video2ImageService,
 	}
 }
 
