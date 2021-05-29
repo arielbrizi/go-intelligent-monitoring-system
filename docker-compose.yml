@@ -18,6 +18,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_CREATE_TOPICS: "images:1:1"
   app:
+    build: ./dir
     image: golang:1.14.3
     ports:
       - "8080:8080" ## Share API port with host machine.
@@ -27,7 +28,8 @@ services:
         - .:/go/src/go-intelligent-monitoring-system
         - /home/:/home/
     working_dir: /go/src/go-intelligent-monitoring-system
-    command: go run main.go
+    command: go run main.go 
+
     environment:
         ## General Variables
         - TZ=America/Argentina/Buenos_Aires
@@ -47,3 +49,4 @@ services:
         - TELEGRAM_USER=@arielbrizi
         ## Notification Type - The adapter to be used
         - NOTIFICATION_TYPE=TELEGRAM # TELEGRAM | SNS
+

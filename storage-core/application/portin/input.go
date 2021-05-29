@@ -4,8 +4,3 @@ package storageapplicationportin
 type InputImagePort interface {
 	ProcessImage(imgData []byte, fileName string) error
 }
-
-//InputVideoPort port in for add videos to analize
-type InputVideoPort interface {
-	ProcessVideo(videoData []byte, fileName string) error
-}
