@@ -19,7 +19,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_CREATE_TOPICS: "images:1:1"
   redis-server:
-    image: "redis:alpine"
+    image: "redis:alpine" #para raspberry pi arm32v7/redis
     command: redis-server --requirepass Qq123456
     ports:
       - "6379:6379"
