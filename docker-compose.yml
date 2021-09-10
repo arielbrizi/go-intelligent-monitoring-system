@@ -1,13 +1,14 @@
 version: "3"
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:5.5.0
+    image: confluentinc/cp-zookeeper:5.5.0 #Para raspberry pi felipeagger/kafka-zookeeper:2.12
+
     container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
 
   broker: #Kafka
-    image: confluentinc/cp-kafka:5.5.0
+    image: confluentinc/cp-kafka:5.5.0 #Para raspberry pi felipeagger/kafka-broker:2.12
     container_name: broker
     depends_on:
       - zookeeper
@@ -17,6 +18,11 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_CREATE_TOPICS: "images:1:1"
+  redis-server:
+    image: "redis:alpine"
+    command: redis-server --requirepass Qq123456
+    ports:
+      - "6379:6379"
   app:
     build: ./dir
     image: golang:1.14.3
@@ -24,6 +30,7 @@ services:
       - "8080:8080" ## Share API port with host machine.
     depends_on:
       - broker
+      - redis-server
     volumes:
         - .:/go/src/go-intelligent-monitoring-system
         - /home/:/home/
@@ -38,13 +45,14 @@ services:
         - QUEUE_TOPIC=images
         - QUEUE_BROKER_LIST=broker:9092 #abc.com/kafka1/:80,abc.com/kafka2/:80,abc.com/kafka3/:80
         - AUTHORIZED_FACES_DIRECTORY=/home/ariel/fotos_pasillo/authorized_faces/
+        - REDIS_PASS=Qq123456 # must be the same defined in "redis-server" on this file.
         ## AWS variables
         - AWS_S3_BUCKET_POLICY={"Version":"2012-10-17","Statement":[{"Sid":"PublicRead","Effect":"Allow","Principal":"*","Action":["s3:GetObject","s3:GetObjectVersion"],"Resource":"arn:aws:s3:::camarasilvia/*"}]} ## Where camarasilvia must be same as CAMARA_DOMAIN variable
         - SNS_TOPIC=arn:aws:sns:us-east-1:491728392546:monitoringSystem-eMail
         - AWS_ACCESS_KEY_ID=XXX
         - AWS_SECRET_ACCESS_KEY=XXX
         ## Telegram variables
-        - TELEGRAM_BOT_TOKEN=XXX
+        - TELEGRAM_BOT_TOKEN=1633724157:AAGRG6YkJYMdBbdTjrpVJkKXk4VH8mDyzFE
         - TELEGRAM_CHANNEL=@notifims
         - TELEGRAM_USER=@arielbrizi
         ## Notification Type - The adapter to be used

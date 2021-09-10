@@ -87,7 +87,8 @@ func NewQueueInAdapter() *recognitionadapterin.KafkaAdapter {
 	var notificationAdapter recognitionapplicationportout.NotificationPort
 	switch os.Getenv("NOTIFICATION_TYPE") {
 	case "TELEGRAM":
-		notificationAdapter = recognitionadapterout.NewTelegramAdapter()
+		//The Telegram Adapter have input (telegram commands) and output methods (send messages)
+		notificationAdapter = recognitionadapterin.NewTelegramAdapter()
 	case "SNS":
 		notificationAdapter = recognitionadapterout.NewSNSAdapter()
 
