@@ -24,6 +24,8 @@ I developed it implementing Hexagonal Architecture (or Ports & Adapters architec
 
 1) Install FTP Server. Recommended: [Install WingFTP in very simple steps](documentation/wingFTP/README.md)
 
+    * Remember to give access to your FTP folder: sudo chown -R ftpuser:nogroup /tu/folder/ftpuserfolder
+
 2) Set the Ip of the FTP server in your IP cameras. On movement detection, cameras will send the image captured  to the FTP server defined.
 
 3) Create a directory and put all the photos of people who is authorized by you. Try to find photos with just one person on it. When you run the application, they will be added to the collection of known people. The directory must be that one you set on docker-compose.yml as "AUTHORIZED_FACES_DIRECTORY"
