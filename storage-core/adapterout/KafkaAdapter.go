@@ -63,6 +63,9 @@ func NewKafkaAdapter() *KafkaAdapter {
 
 	if w == nil {
 		log.WithFields(log.Fields{"topic": topic, "broker": broker}).Fatal("Kafka: failed to create writer")
+	} else {
+		log.WithFields(log.Fields{"topic": topic, "broker": broker}).Info("Kafka: writer created successfully")
+
 	}
 
 	return &KafkaAdapter{
