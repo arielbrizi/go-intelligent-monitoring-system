@@ -70,7 +70,7 @@ func NewKafkaAdapter() *KafkaAdapter {
 
 	}
 
-	createTopic()
+	//createTopic()
 
 	return &KafkaAdapter{
 		writer: w,
