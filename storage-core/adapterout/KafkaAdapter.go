@@ -53,7 +53,7 @@ func (ka *KafkaAdapter) SendImage2Queue(image domain.Image) error {
 //NewKafkaAdapter initializes an KafkaAdapter object.
 func NewKafkaAdapter() *KafkaAdapter {
 	// to produce messages
-	topic := os.Getenv("QUEUE_TOPIC") + "-0"
+	topic := os.Getenv("QUEUE_TOPIC")
 	broker := os.Getenv("QUEUE_BROKER_LIST")
 
 	w := kafka.NewWriter(kafka.WriterConfig{
@@ -80,7 +80,7 @@ func NewKafkaAdapter() *KafkaAdapter {
 }
 
 func createTopic() {
-	_, err := kafka.DialLeader(context.Background(), "tcp", "broker:9092", "images", 0)
+	_, err := kafka.DialLeader(context.Background(), "tcp", "0.0.0.0:9092", "images", 0)
 	if err != nil {
 		panic(err.Error())
 	}
