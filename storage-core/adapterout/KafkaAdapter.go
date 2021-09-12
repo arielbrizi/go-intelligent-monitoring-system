@@ -78,7 +78,7 @@ func NewKafkaAdapter() *KafkaAdapter {
 }
 
 func createTopic() {
-	_, err := kafka.DialLeader(context.Background(), "tcp", "broker:9092", "images", 0)
+	_, err := kafka.DialLeader(context.Background(), "tcp", "localhost:9092", "images", 0)
 	if err != nil {
 		panic(err.Error())
 	}
