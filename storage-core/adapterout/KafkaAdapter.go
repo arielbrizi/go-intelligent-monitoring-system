@@ -31,6 +31,8 @@ func (ka *KafkaAdapter) SendImage2Queue(image domain.Image) error {
 	errWrite := ka.writer.WriteMessages(context.Background(), kafka.Message{Value: value})
 
 	if errWrite != nil {
+		createTopic()
+
 		log.WithFields(log.Fields{"topic": ka.topic, "broker": ka.broker, "image.Name": image.Name, "image.Bucket": image.Bucket}).WithError(errWrite).Error("Failed to write message to kafka")
 
 		ka.writer = kafka.NewWriter(kafka.WriterConfig{
@@ -72,6 +74,13 @@ func NewKafkaAdapter() *KafkaAdapter {
 		writer: w,
 		topic:  topic,
 		broker: broker,
+	}
+}
+
+func createTopic() {
+	_, err := kafka.DialLeader(context.Background(), "tcp", "broker:9092", "images", 0)
+	if err != nil {
+		panic(err.Error())
 	}
 }
 
