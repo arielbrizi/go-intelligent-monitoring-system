@@ -100,23 +100,23 @@ func NewFtpToInputAdapter(imageProcessingService storageapplicationportin.InputI
 
 func createFolders(ftpTodayDirectory string, ftpTodayDirectoryProcessed string, ftpTodayDirectoryFacesNotAuth string, ftpTodayDirectoryFacesAuth string) error {
 	//Create ftpTodayDirectory
-	err := os.Mkdir(ftpTodayDirectory, os.ModePerm)
+	err := os.Mkdir(ftpTodayDirectory, 0777)
 	if err != nil && !strings.Contains(err.Error(), "file exist") {
 		return err
 	}
 
 	//Create ftpTodayDirectoryProcessed
-	err = os.Mkdir(ftpTodayDirectoryProcessed, os.ModePerm)
+	err = os.Mkdir(ftpTodayDirectoryProcessed, 0777)
 	if err != nil && !strings.Contains(err.Error(), "file exist") {
 		return err
 	}
 	//Create ftpTodayDirectoryFacesNotAuth: where images processed are saved.
-	err = os.Mkdir(ftpTodayDirectoryFacesNotAuth, os.ModePerm)
+	err = os.Mkdir(ftpTodayDirectoryFacesNotAuth, 0777)
 	if err != nil && !strings.Contains(err.Error(), "file exist") {
 		return err
 	}
 	//Create ftpTodayDirectoryFacesAuth: where images processed are saved.
-	err = os.Mkdir(ftpTodayDirectoryFacesAuth, os.ModePerm)
+	err = os.Mkdir(ftpTodayDirectoryFacesAuth, 0777)
 	if err != nil && !strings.Contains(err.Error(), "file exist") {
 		return err
 	}
