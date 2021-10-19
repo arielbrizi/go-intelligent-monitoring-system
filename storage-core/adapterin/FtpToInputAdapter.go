@@ -99,7 +99,7 @@ func NewFtpToInputAdapter(imageProcessingService storageapplicationportin.InputI
 }
 
 func createFolders(ftpTodayDirectory string, ftpTodayDirectoryProcessed string, ftpTodayDirectoryFacesNotAuth string, ftpTodayDirectoryFacesAuth string) error {
-	//Create ftpTodayDirectory
+	// Create ftpTodayDirectory
 	err := os.Mkdir(ftpTodayDirectory, 0777)
 	if err != nil && !strings.Contains(err.Error(), "file exist") {
 		return err
