@@ -31,6 +31,7 @@ func (ka *KafkaAdapter) SendImage2Queue(image domain.Image) error {
 	errWrite := ka.writer.WriteMessages(context.Background(), kafka.Message{Value: value})
 
 	if errWrite != nil {
+
 		log.WithFields(log.Fields{"topic": ka.topic, "broker": ka.broker, "image.Name": image.Name, "image.Bucket": image.Bucket}).WithError(errWrite).Error("Failed to write message to kafka")
 
 		ka.writer = kafka.NewWriter(kafka.WriterConfig{
@@ -63,7 +64,12 @@ func NewKafkaAdapter() *KafkaAdapter {
 
 	if w == nil {
 		log.WithFields(log.Fields{"topic": topic, "broker": broker}).Fatal("Kafka: failed to create writer")
+	} else {
+		log.WithFields(log.Fields{"topic": topic, "broker": broker}).Info("Kafka: writer created successfully")
+
 	}
+
+	//createTopic()
 
 	return &KafkaAdapter{
 		writer: w,

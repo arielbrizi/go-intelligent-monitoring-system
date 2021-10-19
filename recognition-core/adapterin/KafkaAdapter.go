@@ -61,7 +61,6 @@ func NewKafkaAdapter(imageAnalizerService recognitionapplicationportin.QueueImag
 	// make a new reader that consumes from topic-A
 	r := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:  []string{broker},
-		GroupID:  "consumer-group-id",
 		Topic:    topic,
 		MinBytes: 10e3, // 10KB
 		MaxBytes: 10e6, // 10MB
