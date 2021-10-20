@@ -104,6 +104,10 @@ func createFolders(ftpTodayDirectory string, ftpTodayDirectoryProcessed string, 
 	if err != nil && !strings.Contains(err.Error(), "file exist") {
 		return err
 	}
+	err = os.Chmod(ftpTodayDirectory, os.ModePerm)
+	if err != nil && !strings.Contains(err.Error(), "chmod ftpTodayDirectory error") {
+		return err
+	}
 
 	//Create ftpTodayDirectoryProcessed
 	err = os.Mkdir(ftpTodayDirectoryProcessed, os.ModePerm)
