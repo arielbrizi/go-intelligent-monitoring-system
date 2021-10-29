@@ -62,6 +62,24 @@ func (ta *TelegramAdapter) GetLastNotRecognizedImage() string {
 	return val
 }
 
+//ActivateRecognition activate face recognition
+func (ta *TelegramAdapter) ActivateRecognition() error {
+	errRedis := ta.redisClient.Set("statusRecognition", "ON", 0).Err()
+	if errRedis != nil {
+		log.WithError(errRedis).Error("error saving in redis")
+	}
+	return errRedis
+}
+
+//DeactivateRecognition deactivate face recognition
+func (ta *TelegramAdapter) DeactivateRecognition() error {
+	errRedis := ta.redisClient.Set("statusRecognition", "OFF", 0).Err()
+	if errRedis != nil {
+		log.WithError(errRedis).Error("error saving in redis")
+	}
+	return errRedis
+}
+
 //NewTelegramAdapter initializes a TelegramAdapter object.
 func NewTelegramAdapter() *TelegramAdapter {
 
@@ -85,6 +103,12 @@ func NewTelegramAdapter() *TelegramAdapter {
 		- Select "ims_config_bot"
 		- Edit Bot
 		- Edit Commands
+
+		hello - HealthCheck
+		last_not_recognized - Get Last Not Recognized
+		last_recognized - Get Last Recognized
+		activate_recognition - Activate Recognition
+		deactivate_recognition - Deactivate Recognition
 	*/
 
 	b.Handle("/menu", func(m *tb.Message) {
@@ -117,9 +141,31 @@ func NewTelegramAdapter() *TelegramAdapter {
 		b.Send(m.Sender, "The last person recognized was: "+telBot.GetLastRecognizedImage())
 	})
 
+	b.Handle("/activate_recognition", func(m *tb.Message) {
+		err := telBot.ActivateRecognition()
+		if err != nil {
+			b.Send(m.Sender, "Recognition could not be Activated ")
+		} else {
+			b.Send(m.Sender, "Recognition Activated ")
+
+		}
+	})
+
+	b.Handle("/deactivate_recognition", func(m *tb.Message) {
+		err := telBot.DeactivateRecognition()
+		if err != nil {
+			b.Send(m.Sender, "Recognition could not be Deactivated ")
+		} else {
+			b.Send(m.Sender, "Recognition Deactivated ")
+
+		}
+	})
+
 	go b.Start()
 
 	defer telBot.NotifyInitializedSystem()
+
+	defer telBot.ActivateRecognition()
 
 	return telBot
 }

@@ -6,7 +6,9 @@ import (
 	storageapplicationportout "go-intelligent-monitoring-system/storage-core/application/portout"
 	"go-intelligent-monitoring-system/storage-core/application/utils"
 	"os"
+	"time"
 
+	"github.com/go-redis/redis"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -14,6 +16,7 @@ import (
 type ImageProcessingService struct {
 	Image2QueueService  Image2QueueService
 	StorageImageAdapter storageapplicationportout.StorageImagePort
+	redisClient         *redis.Client
 }
 
 //ProcessImage analize if image has faces to send it to the Queue.
@@ -26,6 +29,17 @@ func (ips *ImageProcessingService) ProcessImage(imgData []byte, fileName string)
 
 	if faces == 0 {
 		log.WithFields(log.Fields{"fileName": fileName}).Info("No faces on image")
+		deleteImage(fileName)
+		return nil
+	}
+
+	statusRecognition, err := ips.redisClient.Get("statusRecognition").Result()
+	if err != nil {
+		log.WithError(err).Error("error getting redis value: statusRecognition")
+		return nil
+	}
+	if statusRecognition == "OFF" {
+		log.WithFields(log.Fields{"fileName": fileName}).Info("statusRecognition == OFF")
 		return nil
 	}
 
@@ -70,5 +84,25 @@ func NewImageProcessingService(storageImageAdapter storageapplicationportout.Sto
 		Image2QueueService:  *i2qs,
 	}
 
+	ips.redisClient = redis.NewClient(&redis.Options{
+		Addr:     "redis-server:6379",
+		Password: os.Getenv("REDIS_PASS"),
+		DB:       0, // use default DB
+	})
+
 	return ips
+}
+
+func deleteImage(name string) {
+	var t = time.Now()
+	var today = t.Format("20060102")
+	var ftpDirectory = os.Getenv("FTP_DIRECTORY")
+	var ftpTodayDirectory = ftpDirectory + today + "/"
+	err := os.Remove(ftpTodayDirectory + name)
+	if err != nil {
+		log.WithError(err).Error("error deleting file")
+		return
+	}
+	log.WithFields(log.Fields{"fileName": name}).Info("deleted file:" + ftpTodayDirectory + name)
+
 }

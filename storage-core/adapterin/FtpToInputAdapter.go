@@ -1,6 +1,7 @@
 package storageadapterin
 
 import (
+	"errors"
 	storageapplicationportin "go-intelligent-monitoring-system/storage-core/application/portin"
 	"io/ioutil"
 	"os"
@@ -71,12 +72,15 @@ func (ftp *FtpToInputAdapter) Process() {
 			}
 
 			if err == nil {
-				err := os.Rename(ftpTodayDirectory+f.Name(), ftpTodayDirectoryProcessed+f.Name())
-				if err != nil {
-					log.WithFields(log.Fields{"ftpTodayDirectoryProcessed": ftpTodayDirectoryProcessed, "ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).WithError(err).Fatal("Error moving file")
+				if _, err := os.Stat(ftpTodayDirectory + f.Name()); !errors.Is(err, os.ErrNotExist) { //The file exist and was not removed becouse of not detected face.
+					err := os.Rename(ftpTodayDirectory+f.Name(), ftpTodayDirectoryProcessed+f.Name())
+					if err != nil {
+						log.WithFields(log.Fields{"ftpTodayDirectoryProcessed": ftpTodayDirectoryProcessed, "ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).WithError(err).Fatal("Error moving file")
+					}
+
+					log.WithFields(log.Fields{"ftpTodayDirectoryProcessed": ftpTodayDirectoryProcessed, "ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).Info("File correctly processed")
 				}
 
-				log.WithFields(log.Fields{"ftpTodayDirectoryProcessed": ftpTodayDirectoryProcessed, "ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).Info("File correctly processed")
 			} else {
 				log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).WithError(err).Error("Error processing file")
 			}
