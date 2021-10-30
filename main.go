@@ -23,7 +23,7 @@ import (
 func main() {
 
 	log.SetFormatter(&log.JSONFormatter{})
-	log.SetLevel(log.InfoLevel) // TODO: get from Config
+	log.SetLevel(log.ErrorLevel) // TODO: get from Config
 
 	//One log file per day. Purge logs older than 7 days
 	rl, _ := rotatelogs.New("log.%Y%m%d", rotatelogs.WithMaxAge(-1), rotatelogs.WithRotationCount(7))
