@@ -38,10 +38,9 @@ func (ka *KafkaAdapter) ReceiveImagesFromQueue() error {
 
 		_, err = ka.imageAnalizerService.AnalizeImage(image)
 		if err != nil {
-			log.WithFields(log.Fields{"image.Name": image.Name, "kafkaMessage.Topic": kafkaMessage.Topic, "kafkaMessage.Partition": kafkaMessage.Partition, "kafkaMessage.Offset": kafkaMessage.Offset}).WithError(err).Error("failed to analize image")
-		}
+			go log.WithFields(log.Fields{"image.Name": image.Name, "kafkaMessage.Topic": kafkaMessage.Topic, "kafkaMessage.Partition": kafkaMessage.Partition, "kafkaMessage.Offset": kafkaMessage.Offset}).Info("Image correctly analized")
 
-		log.WithFields(log.Fields{"image.Name": image.Name, "kafkaMessage.Topic": kafkaMessage.Topic, "kafkaMessage.Partition": kafkaMessage.Partition, "kafkaMessage.Offset": kafkaMessage.Offset}).Info("Image correctly analized")
+		}
 	}
 
 	if err = ka.reader.Close(); err != nil {
