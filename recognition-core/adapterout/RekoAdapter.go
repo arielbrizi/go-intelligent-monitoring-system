@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"go-intelligent-monitoring-system/domain"
 	"os"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -37,7 +38,9 @@ func (reko *RekoAdapter) Recognize(image domain.Image) (*domain.AnalizedImage, e
 
 	result, err := reko.svc.SearchFacesByImage(input)
 	if err != nil {
-		log.WithFields(log.Fields{"collectionName": collectionName, "image.Name": image.Name, "image.Bucket": image.Bucket}).WithError(err).Error("Error on rekognition.SearchFacesByImageInput")
+		if !strings.Contains(err.Error(), "There are no faces in the image") {
+			go log.WithFields(log.Fields{"collectionName": collectionName, "image.Name": image.Name, "image.Bucket": image.Bucket}).WithError(err).Error("Error on rekognition.SearchFacesByImageInput")
+		}
 		return nil, err
 	}
 
