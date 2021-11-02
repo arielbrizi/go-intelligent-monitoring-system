@@ -6,6 +6,7 @@ import (
 	"go-intelligent-monitoring-system/domain"
 	recognitionapplicationportin "go-intelligent-monitoring-system/recognition-core/application/portin"
 	"os"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 
@@ -59,7 +60,7 @@ func NewKafkaAdapter(imageAnalizerService recognitionapplicationportin.QueueImag
 
 	// make a new reader that consumes from topic-A
 	r := kafka.NewReader(kafka.ReaderConfig{
-		Brokers:  []string{broker},
+		Brokers:  strings.Split(broker, ","),
 		Topic:    topic,
 		MinBytes: 10e3, // 10KB
 		MaxBytes: 10e6, // 10MB

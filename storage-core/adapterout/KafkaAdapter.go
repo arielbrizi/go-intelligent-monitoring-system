@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"go-intelligent-monitoring-system/domain"
 	"os"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -56,7 +57,7 @@ func NewKafkaAdapter() *KafkaAdapter {
 	broker := os.Getenv("QUEUE_BROKER_LIST")
 
 	w := kafka.NewWriter(kafka.WriterConfig{
-		Brokers:         []string{broker},
+		Brokers:         strings.Split(broker, ","),
 		Topic:           topic,
 		Balancer:        &kafka.LeastBytes{},
 		IdleConnTimeout: 720 * time.Hour, // 1 Mes

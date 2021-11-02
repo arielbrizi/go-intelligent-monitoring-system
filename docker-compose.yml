@@ -19,6 +19,18 @@ services:
       KAFKA_LISTENERS: PLAINTEXT://broker:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_CREATE_TOPICS: "images:1:1"
+  broker2: #Kafka
+    image: confluentinc/cp-kafka:5.5.0 #Para raspberry pi fogsyio/kafka:arm32v7-2.2.0
+    container_name: broker2
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker2:9093
+      KAFKA_LISTENERS: PLAINTEXT://broker2:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CREATE_TOPICS: "images:1:1"
   redis-server:
     image: "redis:alpine" #para raspberry pi hypriot/rpi-redis
     command: redis-server --requirepass Qq123456
@@ -44,7 +56,7 @@ services:
         - FTP_DIRECTORY=/home/ariel/fotos_pasillo/
         - CAMARA_DOMAIN=camarasilvia # In case of S3 it's used to define the "bucket" name
         - QUEUE_TOPIC=images
-        - QUEUE_BROKER_LIST=broker:9092 #abc.com/kafka1/:80,abc.com/kafka2/:80,abc.com/kafka3/:80
+        - QUEUE_BROKER_LIST=broker:9092,broker2:9093 #abc.com/kafka1/:80,abc.com/kafka2/:80,abc.com/kafka3/:80
         - AUTHORIZED_FACES_DIRECTORY=/home/ariel/fotos_pasillo/authorized_faces/
         - REDIS_PASS=Qq123456 # must be the same defined in "redis-server" on this file.
         ## AWS variables
