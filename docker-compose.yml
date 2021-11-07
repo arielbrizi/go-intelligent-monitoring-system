@@ -45,7 +45,7 @@ services:
         - FTP_DIRECTORY=/home/ariel/fotos_pasillo/
         - CAMARA_DOMAIN=camarasilvia # In case of S3 it's used to define the "bucket" name
         - QUEUE_TOPIC=images
-        - QUEUE_BROKER_LIST=broker:9092,broker2:9093 #abc.com/kafka1/:80,abc.com/kafka2/:80,abc.com/kafka3/:80
+        - QUEUE_BROKER_LIST=broker:9092 #abc.com/kafka1/:80,abc.com/kafka2/:80,abc.com/kafka3/:80
         - AUTHORIZED_FACES_DIRECTORY=/home/ariel/fotos_pasillo/authorized_faces/
         - REDIS_PASS=Qq123456 # must be the same defined in "redis-server" on this file.
         ## AWS variables
