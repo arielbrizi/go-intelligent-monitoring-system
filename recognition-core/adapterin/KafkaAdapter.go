@@ -6,6 +6,7 @@ import (
 	"go-intelligent-monitoring-system/domain"
 	recognitionapplicationportin "go-intelligent-monitoring-system/recognition-core/application/portin"
 	"os"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 
@@ -38,10 +39,9 @@ func (ka *KafkaAdapter) ReceiveImagesFromQueue() error {
 
 		_, err = ka.imageAnalizerService.AnalizeImage(image)
 		if err != nil {
-			log.WithFields(log.Fields{"image.Name": image.Name, "kafkaMessage.Topic": kafkaMessage.Topic, "kafkaMessage.Partition": kafkaMessage.Partition, "kafkaMessage.Offset": kafkaMessage.Offset}).WithError(err).Error("failed to analize image")
-		}
+			go log.WithFields(log.Fields{"image.Name": image.Name, "kafkaMessage.Topic": kafkaMessage.Topic, "kafkaMessage.Partition": kafkaMessage.Partition, "kafkaMessage.Offset": kafkaMessage.Offset}).Info("Image correctly analized")
 
-		log.WithFields(log.Fields{"image.Name": image.Name, "kafkaMessage.Topic": kafkaMessage.Topic, "kafkaMessage.Partition": kafkaMessage.Partition, "kafkaMessage.Offset": kafkaMessage.Offset}).Info("Image correctly analized")
+		}
 	}
 
 	if err = ka.reader.Close(); err != nil {
@@ -60,7 +60,7 @@ func NewKafkaAdapter(imageAnalizerService recognitionapplicationportin.QueueImag
 
 	// make a new reader that consumes from topic-A
 	r := kafka.NewReader(kafka.ReaderConfig{
-		Brokers:  []string{broker},
+		Brokers:  strings.Split(broker, ","),
 		Topic:    topic,
 		MinBytes: 10e3, // 10KB
 		MaxBytes: 10e6, // 10MB

@@ -2,16 +2,16 @@ version: "3"
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:5.5.0 #Para raspberry pi felipeagger/kafka-zookeeper:2.12
-
+    tty: true
     container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
-
   broker: #Kafka
     image: confluentinc/cp-kafka:5.5.0 #Para raspberry pi fogsyio/kafka:arm32v7-2.2.0
     container_name: broker
     depends_on:
       - zookeeper
+    tty: true
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -22,6 +22,7 @@ services:
   redis-server:
     image: "redis:alpine" #para raspberry pi hypriot/rpi-redis
     command: redis-server --requirepass Qq123456
+    tty: true
     ports:
       - "6379:6379"
   app:
@@ -37,7 +38,7 @@ services:
         - /home/:/home/
     working_dir: /go/src/go-intelligent-monitoring-system
     command: go run main.go 
-
+    tty: true
     environment:
         ## General Variables
         - TZ=America/Argentina/Buenos_Aires

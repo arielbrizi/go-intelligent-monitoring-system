@@ -32,7 +32,7 @@ func (ftp *FtpToInputAdapter) Process() {
 
 	errCreateFolders := createFolders(ftpTodayDirectory, ftpTodayDirectoryProcessed, ftpTodayDirectoryFacesNotAuth, ftpTodayDirectoryFacesAuth)
 	if errCreateFolders != nil && !strings.Contains(errCreateFolders.Error(), "file exist") {
-		log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory}).WithError(errCreateFolders).Fatal("Error creating directories")
+		go log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory}).WithError(errCreateFolders).Fatal("Error creating directories")
 	}
 
 	for {
@@ -48,7 +48,7 @@ func (ftp *FtpToInputAdapter) Process() {
 
 			errCreateFolders := createFolders(ftpTodayDirectory, ftpTodayDirectoryProcessed, ftpTodayDirectoryFacesNotAuth, ftpTodayDirectoryFacesAuth)
 			if errCreateFolders != nil && !strings.Contains(errCreateFolders.Error(), "file exist") {
-				log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory}).WithError(errCreateFolders).Fatal("Error creating directories")
+				go log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory}).WithError(errCreateFolders).Fatal("Error creating directories")
 			}
 		}
 
@@ -62,7 +62,7 @@ func (ftp *FtpToInputAdapter) Process() {
 
 			fileBytes, errFile := ioutil.ReadFile(ftpTodayDirectory + f.Name())
 			if errFile != nil {
-				log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).WithError(errFile).Fatal("Error reading file")
+				go log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).WithError(errFile).Fatal("Error reading file")
 			}
 			if strings.HasSuffix(f.Name(), ".jpg") {
 				err = ftp.imageProcessingService.ProcessImage(fileBytes, f.Name())
@@ -75,14 +75,14 @@ func (ftp *FtpToInputAdapter) Process() {
 				if _, err := os.Stat(ftpTodayDirectory + f.Name()); !errors.Is(err, os.ErrNotExist) { //The file exist and was not removed becouse of not detected face.
 					err := os.Rename(ftpTodayDirectory+f.Name(), ftpTodayDirectoryProcessed+f.Name())
 					if err != nil {
-						log.WithFields(log.Fields{"ftpTodayDirectoryProcessed": ftpTodayDirectoryProcessed, "ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).WithError(err).Fatal("Error moving file")
+						go log.WithFields(log.Fields{"ftpTodayDirectoryProcessed": ftpTodayDirectoryProcessed, "ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).WithError(err).Fatal("Error moving file")
 					}
 
-					log.WithFields(log.Fields{"ftpTodayDirectoryProcessed": ftpTodayDirectoryProcessed, "ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).Info("File correctly processed")
+					go log.WithFields(log.Fields{"ftpTodayDirectoryProcessed": ftpTodayDirectoryProcessed, "ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).Info("File correctly processed")
 				}
 
 			} else {
-				log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).WithError(err).Error("Error processing file")
+				go log.WithFields(log.Fields{"ftpTodayDirectory": ftpTodayDirectory, "fileName": f.Name()}).WithError(err).Error("Error processing file")
 			}
 
 		}

@@ -1,9 +1,3 @@
-#Delete all directories olders on /home/ariel/fotos_pasillo/* 
-find /home/ec2-user/wftpserver/pasillo/* -type d -mtime +1 -exec rm -rf {} \;
-d=`date`
-msg="script executed: $d"
-echo "$msg"
-
 dateMenos1=$(TZ=America/Argentina/Buenos_Aires date -d '1 day ago' +'%Y%m%d')
 find /home/ec2-user/wftpserver/pasillo/$dateMenos1* -type d  -exec rm -rf {} \;
 
